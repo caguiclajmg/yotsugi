@@ -23,9 +23,10 @@ function gelbooru(params) {
             };
         })
         .catch((err) => {
-            response = { 'text': `Unable to fetch results from Gelbooru` };
+            response = { 'text': `Unable to fetch results from Gelbooru!` };
         });
 
+    console.log(response);
     return response;
 }
 
