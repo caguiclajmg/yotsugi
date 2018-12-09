@@ -87,7 +87,7 @@ function handleMessage(sender_psid, received_message) {
 
     let response;
     if(commands.hasOwnProperty(command)) {
-        response = commands[command](sender_psid, params);
+        response = commands[command](params);
     } else {
         response = { 'text': `Command: ${command}\nParameters: ${params}` };
     }
