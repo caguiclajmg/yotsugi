@@ -14,8 +14,17 @@ const express = require('express'),
       bodyParser = require('body-parser'),
       request = require('request-promise');
 
-const app = express()
-app.use(bodyParser.json())
+const commands = {};
+['nsfw'].forEach((e) => {
+    const module = require(`./app/commands/${e}`);
+    for(const [cmd, fn] of Object.entries(module)) {
+        commands[cmd] = fn;
+        console.log(`Adding ${cmd}`);
+    }
+});
+
+const app = express();
+app.use(bodyParser.json());
 
 app.get('/webhook', (req, res) => {
     let mode = req.query['hub.mode'];
@@ -76,18 +85,11 @@ function handleMessage(sender_psid, received_message) {
     let [command, ...params] = message.split(' ');
     params = params.join(' ');
 
-    switch(command) {
-        case 'gelbooru':
-            commandGelbooru(sender_psid, params);
-            break;
-
-        case 'weather':
-            commandWeather(sender_psid, params);
-            break;
-
-        default:
-            let response = { 'text': `Command: ${command}\nParameters: ${params}` };
-            callSendAPI(sender_psid, response);
+    if(commands.hasOwnProperty(command)) {
+        commands[command](sender_psid, params);
+    } else {
+        let response = { 'text': `Command: ${command}\nParameters: ${params}` };
+        callSendAPI(sender_psid, response);
     }
 }
 
@@ -128,32 +130,6 @@ function commandWeather(sender_psid, params) {
                        `Avg. Temperature: ${weather.main.temp}`;
             callSendAPI(sender_psid, {
                 'text': text
-            });
-        } else {
-            console.error(`An error occured! ${err}`);
-        }
-    });
-}
-
-function commandGelbooru(sender_psid, params) {
-    request({
-        'uri': `https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&tags=${encodeURIComponent(params)}&api_key=${process.env.GELBOORU_KEY}&user_id=${process.env.GELBOORU_ID}`,
-        'method': 'GET',
-    }, (err, res, body) => {
-        if(!err) {
-            var entries = JSON.parse(body);
-
-            var idx = Math.floor(Math.random() * Math.floor(entries.length));
-            var url = entries[idx].file_url;
-
-            callSendAPI(sender_psid, {
-                'attachment': {
-                    'type': 'image',
-                    'payload': {
-                        'url': url,
-                        'is_reusable': true
-                    }
-                }
             });
         } else {
             console.error(`An error occured! ${err}`);
