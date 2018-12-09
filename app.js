@@ -85,12 +85,14 @@ function handleMessage(sender_psid, received_message) {
     let [command, ...params] = message.split(' ');
     params = params.join(' ');
 
+    let response;
     if(commands.hasOwnProperty(command)) {
-        commands[command](sender_psid, params);
+        response = commands[command](sender_psid, params);
     } else {
-        let response = { 'text': `Command: ${command}\nParameters: ${params}` };
-        callSendAPI(sender_psid, response);
+        response = { 'text': `Command: ${command}\nParameters: ${params}` };
     }
+
+    callSendAPI(sender_psid, response);
 }
 
 function handlePostback(sender_psid, received_postback) {
