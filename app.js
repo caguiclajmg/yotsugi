@@ -127,7 +127,7 @@ function commandWeather(sender_psid, params) {
                        `Type: ${weather.weather.main} (${weather.weather.description})\n` +
                        `Avg. Temperature: ${weather.main.temp}`;
             callSendAPI(sender_psid, {
-                'text': 'test'
+                'text': text
             });
         } else {
             console.error(`An error occured! ${err}`);
