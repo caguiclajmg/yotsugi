@@ -124,7 +124,7 @@ function commandWeather(sender_psid, params) {
         if(!err) {
             var weather = JSON.parse(body);
             var text = `${weather.name} Weather:\n` +
-                       `Type: ${weather.weather.main} (${weather.weather.description})\n` +
+                       `Type: ${weather.weather[0].main} (${weather.weather[0].description})\n` +
                        `Avg. Temperature: ${weather.main.temp}`;
             callSendAPI(sender_psid, {
                 'text': text
