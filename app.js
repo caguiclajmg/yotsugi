@@ -2,9 +2,10 @@
 
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN,
       APP_SECRET = process.env.APP_SECRET,
-      PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
+      PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN,
+      COMMAND_PREFIX = process.env.COMMAND_PREFIX;
 
-if(!VERIFY_TOKEN || !APP_SECRET || !PAGE_ACCESS_TOKEN) {
+if(!VERIFY_TOKEN || !APP_SECRET || !PAGE_ACCESS_TOKEN || !COMMAND_PREFIX) {
     console.error('Missing configuration variables!');
     return;
 }
@@ -62,14 +63,20 @@ app.post('/webhook', (req, res) => {
 app.listen(process.env.PORT || 5000, () => console.log('Starting server...'));
 
 function handleMessage(sender_psid, received_message) {
-    let response;
+    const message = received_message.text;
 
-    if(received_message.text) {
-        response = {
-            'text': 'This is an example reply.'
-        };
+    if(!message || !message.startsWith(COMMAND_PREFIX)) {
+        let response = { 'text': 'こんにちは！' };
+        callSendAPI(sender_psid, response);
+        return;
     }
 
+    message = message.slice(COMMAND_PREFIX.length);
+
+    let [command, ...params] = message.split(' ');
+    params = params.join(' ');
+
+    let response = { 'text': `Command: ${command}\nParameters: ${params}` };
     callSendAPI(sender_psid, response);
 }
 
