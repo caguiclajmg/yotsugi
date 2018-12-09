@@ -76,8 +76,37 @@ function handleMessage(sender_psid, received_message) {
     let [command, ...params] = message.split(' ');
     params = params.join(' ');
 
-    let response = { 'text': `Command: ${command}\nParameters: ${params}` };
-    callSendAPI(sender_psid, response);
+    switch(command) {
+        case 'yotsugi':
+            request({
+                'uri': `https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&api_key=${process.env.GELBOORU_KEY}&user_id=${process.env.GELBOORU_ID}`,
+                'method': 'GET',
+            }, (err, a, body) => {
+                if(!err) {
+                    var entries = JSON.parse(body);
+
+                    var image_url = entries[Math.floor(Math.random() * Math.floor(entries.length))].file_url;
+
+                    callSendAPI(sender_psid, {
+                        'attachment': {
+                            'type': 'image',
+                            'payload': {
+                                'url': image_url,
+                                'is_reusable': true
+                            }
+                        }
+                    });
+                    return;
+                } else {
+                    console.error(`An error occured! ${err}`);
+                }
+            });
+            break;
+
+        default:
+            let response = { 'text': `Command: ${command}\nParameters: ${params}` };
+            callSendAPI(sender_psid, response);
+    }
 }
 
 function handlePostback(sender_psid, received_postback) {
