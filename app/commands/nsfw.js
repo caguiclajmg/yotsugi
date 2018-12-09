@@ -3,14 +3,13 @@
 const rp = require('request-promise');
 
 function gelbooru(params) {
-    let response;
+    var response;
 
     rp(`https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&tags=${encodeURIComponent(params)}&api_key=${process.env.GELBOORU_KEY}&user_id=${process.env.GELBOORU_ID}`)
         .then((res) => {
-            var entries = JSON.parse(body);
-
-            var idx = Math.floor(Math.random() * Math.floor(entries.length));
-            var url = entries[idx].file_url;
+            const entries = JSON.parse(body),
+                  index = Math.floor(Math.random() * Math.floor(entries.length)),
+                  url = entries[index].file_url;
 
             response = {
                 'attachment': {
