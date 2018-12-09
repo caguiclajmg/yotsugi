@@ -63,7 +63,7 @@ app.post('/webhook', (req, res) => {
 app.listen(process.env.PORT || 5000, () => console.log('Starting server...'));
 
 function handleMessage(sender_psid, received_message) {
-    const message = received_message.text;
+    let message = received_message.text;
 
     if(!message || !message.startsWith(COMMAND_PREFIX)) {
         let response = { 'text': 'こんにちは！' };
