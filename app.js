@@ -10,7 +10,8 @@ if(!VERIFY_TOKEN || !APP_SECRET || !PAGE_ACCESS_TOKEN) {
 }
 
 const express = require('express'),
-      bodyParser = require('body-parser');
+      bodyParser = require('body-parser'),
+      request = require('request-promise');
 
 const app = express()
 app.use(bodyParser.json())
@@ -44,10 +45,55 @@ app.post('/webhook', (req, res) => {
 
     body.entry.forEach((entry) => {
         let webhook_event = entry.messaging[0];
-        console.log(webhook_event);
+        let sender_psid = webhook_event.sender.id;
+
+        if(webhook_event.message) {
+            handleMessage(sender_psid, webhook_event.message);
+        } else if(webhook_event.postback) {
+            handlePostback(sender_psid, webhook_event.postback);
+        } else {
+            res.sendStatus(501);
+        }
     });
 
     res.status(200).send('EVENT_RECEIVED');
 });
 
 app.listen(process.env.PORT || 5000, () => console.log('Starting server...'));
+
+function handleMessage(sender_psid, received_message) {
+    let response;
+
+    if(received_message.text) {
+        response = {
+            'text': 'This is an example reply.'
+        };
+    }
+
+    callSendAPI(sender_psid, response);
+}
+
+function handlePostback(sender_psid, received_postback) {
+}
+
+function callSendAPI(sender_psid, response) {
+    let request_body = {
+        'recipient': {
+            'id': sender_psid
+        },
+        'message': response
+    };
+
+    request({
+        'uri': 'https://graph.facebook.com/v2.6/me/messages',
+        'qs': { 'access_token': PAGE_ACCESS_TOKEN },
+        'method': 'POST',
+        'json': request_body
+    }, (err, res, body) => {
+        if(!err) {
+            console.log('Message sent!');
+        } else {
+            console.error(`An error occured! ${err}`);
+        }
+    });
+}
