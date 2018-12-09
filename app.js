@@ -78,29 +78,11 @@ function handleMessage(sender_psid, received_message) {
 
     switch(command) {
         case 'gelbooru':
-            request({
-                'uri': `https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&tags=${encodeURIComponent(params)}&api_key=${process.env.GELBOORU_KEY}&user_id=${process.env.GELBOORU_ID}`,
-                'method': 'GET',
-            }, (err, a, body) => {
-                if(!err) {
-                    var entries = JSON.parse(body);
+            commandGelbooru(sender_psid, params);
+            break;
 
-                    var image_url = entries[Math.floor(Math.random() * Math.floor(entries.length))].file_url;
-
-                    callSendAPI(sender_psid, {
-                        'attachment': {
-                            'type': 'image',
-                            'payload': {
-                                'url': image_url,
-                                'is_reusable': true
-                            }
-                        }
-                    });
-                    return;
-                } else {
-                    console.error(`An error occured! ${err}`);
-                }
-            });
+        case 'weather':
+            commandWeather(sender_psid, params);
             break;
 
         default:
@@ -128,6 +110,51 @@ function callSendAPI(sender_psid, response) {
     }, (err, res, body) => {
         if(!err) {
             console.log('Message sent!');
+        } else {
+            console.error(`An error occured! ${err}`);
+        }
+    });
+}
+
+function commandWeather(sender_psid, params) {
+    request({
+        'uri': `http://api.openweathermap.org/data/2.5/weather?zip=${params}&appid=${process.env.OPENWEATHERMAP_KEY}`,
+        'method': 'GET',
+    }, (err, res, body) => {
+        if(!err) {
+            var weather = JSON.parse(body);
+            var text = `${weather.name} Weather:\n` +
+                       `Type: ${weather.weather.main} (${weather.weather.description})\n` +
+                       `Avg. Temperature: ${weather.main.temp}`;
+            callSendAPI(sender_psid, {
+                'text': 'test'
+            });
+        } else {
+            console.error(`An error occured! ${err}`);
+        }
+    });
+}
+
+function commandGelbooru(sender_psid, params) {
+    request({
+        'uri': `https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&tags=${encodeURIComponent(params)}&api_key=${process.env.GELBOORU_KEY}&user_id=${process.env.GELBOORU_ID}`,
+        'method': 'GET',
+    }, (err, res, body) => {
+        if(!err) {
+            var entries = JSON.parse(body);
+
+            var idx = Math.floor(Math.random() * Math.floor(entries.length));
+            var url = entries[idx].file_url;
+
+            callSendAPI(sender_psid, {
+                'attachment': {
+                    'type': 'image',
+                    'payload': {
+                        'url': url,
+                        'is_reusable': true
+                    }
+                }
+            });
         } else {
             console.error(`An error occured! ${err}`);
         }
