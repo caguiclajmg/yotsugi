@@ -23,7 +23,7 @@ function gelbooru(sender_psid, params) {
                 }
             };
         } else {
-            console.error(`An error occured! ${err}`);
+            return { 'text': `Unable to fetch results from Gelbooru` };
         }
     });
 }
