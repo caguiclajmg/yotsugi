@@ -12,7 +12,7 @@ function gelbooru(params) {
             var idx = Math.floor(Math.random() * Math.floor(entries.length));
             var url = entries[idx].file_url;
 
-            return {
+            response = {
                 'attachment': {
                     'type': 'image',
                     'payload': {
