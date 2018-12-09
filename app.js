@@ -77,9 +77,9 @@ function handleMessage(sender_psid, received_message) {
     params = params.join(' ');
 
     switch(command) {
-        case 'yotsugi':
+        case 'gelbooru':
             request({
-                'uri': `https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&api_key=${process.env.GELBOORU_KEY}&user_id=${process.env.GELBOORU_ID}`,
+                'uri': `https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&tags=${encodeURIComponent(params)}&api_key=${process.env.GELBOORU_KEY}&user_id=${process.env.GELBOORU_ID}`,
                 'method': 'GET',
             }, (err, a, body) => {
                 if(!err) {
