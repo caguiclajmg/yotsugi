@@ -92,6 +92,7 @@ function handleMessage(sender_psid, received_message) {
         response = { 'text': `Command: ${command}\nParameters: ${params}` };
     }
 
+    console.log(response);
     callSendAPI(sender_psid, response);
 }
 
