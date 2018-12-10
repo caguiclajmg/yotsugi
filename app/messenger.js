@@ -56,15 +56,18 @@ function sendPage(sender_psid, url) {
         },
         "message": {
             "attachment": {
-                "template_type": "button",
-                "text": "Sample Text",
-                "buttons": [{
-                    "type": "web_url",
-                    "url": "https://google.com/",
-                    "title": "Test",
-                    "webview_height_ratio": "compact",
-                    "messenger_extensions": "false"
-                }]
+                "type": "template",
+                "payload": {
+                    "template_type": "button",
+                    "text": "Sample Text",
+                    "buttons": [{
+                        "type": "web_url",
+                        "url": "https://google.com/",
+                        "title": "Test",
+                        "webview_height_ratio": "compact",
+                        "messenger_extensions": "false"
+                    }]
+                }
             }
         }
     });
