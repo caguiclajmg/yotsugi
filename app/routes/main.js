@@ -62,7 +62,7 @@ function handleMessage(sender_psid, received_message) {
     params = params.join(' ');
 
     if(commands.hasOwnProperty(command)) {
-
+        commands[command](sender_psid, params);
     } else {
         messenger.sendText(sender_psid, `Unrecognized command ${command}!`);
     }
