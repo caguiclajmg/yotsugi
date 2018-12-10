@@ -2,7 +2,7 @@
 
 const rp = require("request-promise"),
       messenger = require("../messenger"),
-      config = require.main;
+      config = require("../../config");
 
 function gelbooru(sender_psid, params) {
     return rp({
