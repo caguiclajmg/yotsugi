@@ -20,8 +20,8 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
+    "html2plaintext": "^2.1.0",
     "request": "^2.88.0",
-    "request-promise": "^4.2.2",
-    "sanitize-html": "^1.19.3"
+    "request-promise": "^4.2.2"
   }
 }

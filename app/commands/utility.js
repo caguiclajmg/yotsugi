@@ -1,7 +1,7 @@
 "use strict";
 
 const rp = require("request-promise"),
-      sanitizeHTML = require("sanitize-html"),
+      h2p = require("html2plaintext"),
       messenger = require("../messenger"),
       config = require("../../config");
 
@@ -32,7 +32,7 @@ const wikipedia = (sender_psid, params) => {
                 "json": true
                 })
                 .then((res) => {
-                    var text = sanitizeHTML(res.parse.text["*"]);
+                    var text = h2p(res.parse.text["*"]);
                     messenger.sendText(sender_psid, `${text}`);
                 })
                 .catch((err) => {
