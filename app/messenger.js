@@ -8,15 +8,30 @@ function sendResponse(sender_psid, response) {
         "uri": "https://graph.facebook.com/v2.6/me/messages",
         "qs": { "access_token": config.APP_PAGE_TOKEN },
         "method": "POST",
-        "json": {
-            "recipient": {
-                "id": sender_psid
-            },
-            "message": response
-        }
+        "json": response
+    });
+}
+
+function sendMessage(sender_psid, message) {
+    return sendResponse(sender_psid, {
+        "recipient": {
+            "id": sender_psid
+        },
+        "message": message
+    });
+}
+
+function sendTypingIndicator(sender_psid, status) {
+    return sendResponse(sender_psid, {
+        "recipient": {
+            "id": sender_psid
+        },
+        "sender_action": status ? "typing_on" : "typing_off"
     });
 }
 
 module.exports = {
-    "sendResponse": sendResponse
+    "sendResponse": sendResponse,
+    "sendMessage": sendMessage,
+    "sendTypingIndicator": sendTypingIndicator
 };
