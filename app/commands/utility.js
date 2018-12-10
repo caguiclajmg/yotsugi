@@ -7,6 +7,7 @@ const rp = require("request-promise"),
 function translate(sender_psid, params) {
     let [lang, ...text] = params.split(" ");
     text = text.join(" ");
+    console.log(`https://translate.yandex.net/api/v1.5/tr.json/translate?key=${config.YANDEX_TRANSLATE_KEY}&text=${encodeURIComponent(text)}&lang=${lang}`);
 
     return rp({
         "uri": `https://translate.yandex.net/api/v1.5/tr.json/translate?key=${config.YANDEX_TRANSLATE_KEY}&text=${encodeURIComponent(text)}&lang=${lang}`,
