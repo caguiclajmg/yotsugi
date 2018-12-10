@@ -1,6 +1,7 @@
 "use strict";
 
 const rp = require("request-promise"),
+      sanitizeHTML = require("sanitize-html"),
       messenger = require("../messenger"),
       config = require("../../config");
 
@@ -20,6 +21,30 @@ const translate = (sender_psid, params) => {
         });
 }
 
+const wikipedia = (sender_psid, params) => {
+    return rp({
+        "uri": `https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&utf8=1&srsearch=${encodeURIComponent(params)}`,
+        "json": true
+        })
+        .then((res) => {
+            rp({
+                "uri": `https://en.wikipedia.org/w/api.php?action=parse&format=json&prop=text&page=${res.query.search[0].title}`,
+                "json": true
+                })
+                .then((res) => {
+                    var text = sanitizeHTML(res.parse.text["*"]);
+                    messenger.sendText(sender_psid, `${text}`);
+                })
+                .catch((err) => {
+                    messenger.sendText(sender_psid, "Unable to fetch article!");
+                });
+        })
+        .catch((err) => {
+            messenger.sendText(sender_psid, "Unable to fetch article!");
+        });
+}
+
 module.exports = {
-    translate
+    translate,
+    wikipedia
 }
