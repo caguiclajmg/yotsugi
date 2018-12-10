@@ -49,9 +49,31 @@ function sendTypingIndicator(sender_psid, status) {
     });
 }
 
+function sendPage(sender_psid, url) {
+    return sendResponse(sender_psid, {
+        "recipient": {
+            "id": sender_psid
+        },
+        "message": {
+            "attachment": {
+                "template_type": "button",
+                "text": "Sample Text",
+                "buttons": [{
+                    "type": "web_url",
+                    "url": "https://google.com/",
+                    "title": "Test",
+                    "webview_height_ratio": "compact",
+                    "messenger_extensions": "false"
+                }]
+            }
+        }
+    });
+}
+
 module.exports = {
     "sendResponse": sendResponse,
     "sendText": sendText,
     "sendTypingIndicator": sendTypingIndicator,
-    "sendAttachmentFromURL": sendAttachmentFromURL
+    "sendAttachmentFromURL": sendAttachmentFromURL,
+    "sendPage": sendPage
 };

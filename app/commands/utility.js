@@ -20,6 +20,11 @@ function translate(sender_psid, params) {
         });
 }
 
+function page(sender_psid, params) {
+    messenger.sendPage(sender_psid, params);
+}
+
 module.exports = {
     "translate": translate,
+    "page": page
 }
