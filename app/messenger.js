@@ -26,7 +26,7 @@ const sendText = (sender_psid, text) => {
           sendChunks = (sender_psid, chunks, index = 0) => {
               sendResponse(sender_psid, {
                   message: {
-                      text: chunks[chunk]
+                      text: chunks[index]
                   }
               })
               .then((res) => {
