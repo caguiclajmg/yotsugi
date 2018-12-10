@@ -11,7 +11,7 @@ function sendResponse(sender_psid, response) {
         "message": response
     };
 
-    return request({
+    return rp({
         "uri": "https://graph.facebook.com/v2.6/me/messages",
         "qs": { "accesss_token": config.APP_PAGE_TOKEN },
         "method": "POST",
