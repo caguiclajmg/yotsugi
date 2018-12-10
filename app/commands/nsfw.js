@@ -10,7 +10,7 @@ function gelbooru(sender_psid, params) {
         "json": true)
         .then((res) => {
             const index = Math.floor(Math.random() * Math.floor(res.length)),
-                  url = res[index];
+                  url = res[index].file_url;
 
             messenger.sendAttachmentFromURL(sender_psid, "image", url);
         })
