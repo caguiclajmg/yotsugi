@@ -49,13 +49,10 @@ router.post('/webhook', (req, res) => {
 });
 
 function handleMessage(sender_psid, received_message) {
-    messenger.sendTypingIndicator(sender_psid, true);
-
     let message = received_message.text;
 
     if(!message || !message.startsWith(config.COMMAND_PREFIX)) {
-        let response = { 'text': 'こんにちは！' };
-        messenger.sendMessage(sender_psid, response);
+        messenger.sendText(sender_psid, "こんにちは！");
         return;
     }
 
@@ -64,10 +61,11 @@ function handleMessage(sender_psid, received_message) {
     let [command, ...params] = message.split(' ');
     params = params.join(' ');
 
-    let response = { 'text': `Command: ${command}\nParameters: ${params}` };
-    messenger.sendMessage(sender_psid, response);
+    if(commands.hasOwnProperty(command)) {
 
-    messenger.sendTypingIndicator(sender_psid, true);
+    } else {
+        messenger.sendText(sender_psid, `Unrecognized command ${command}!`);
+    }
 }
 
 function handlePostback(sender_psid, received_postback) {
