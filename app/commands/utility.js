@@ -5,7 +5,7 @@ const rp = require("request-promise"),
       config = require.main;
 
 function translate(sender_psid, params) {
-    const [lang, ...text] = params.split(" ");
+    let [lang, ...text] = params.split(" ");
     text = text.join(" ");
 
     return rp({
