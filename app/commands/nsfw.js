@@ -6,7 +6,7 @@ const rp = require("request-promise"),
 
 function gelbooru(sender_psid, params) {
     return rp({
-        "uri": `https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&tags=${encodeURIComponent(params)}&api_key=${process.env.GELBOORU_KEY}&user_id=${process.env.GELBOORU_USERID}`,
+        "uri": `https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&tags=${encodeURIComponent(params)}&api_key=${config.GELBOORU_KEY}&user_id=${config.GELBOORU_USERID}`,
         "json": true
         })
         .then((res) => {
