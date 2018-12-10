@@ -31,7 +31,7 @@ const sendText = (sender_psid, text) => {
                   }
               })
               .then((res) => {
-                  if(index < chunks.length) sendChunks(sender_psid, chunks, ++index);
+                  if(index < chunks.length - 1) sendChunks(sender_psid, chunks, ++index);
               });
           };
 
