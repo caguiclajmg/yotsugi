@@ -9,7 +9,7 @@ function translate(sender_psid, params) {
     text = text.join(" ");
 
     return rp({
-        "uri": `https://translate.yandex.net/api/v1.5/tr.json/translate?key=${config.YANDEX_TRANSLATE_KEY}&text=${encodeURIComponent(text)}&lang=${encodeURIComponent(lang)}`,
+        "uri": `https://translate.yandex.net/api/v1.5/tr.json/translate?key=${config.YANDEX_TRANSLATE_KEY}&text=${encodeURIComponent(text)}&lang=${lang}`,
         "json": true
         })
         .then((res) => {
