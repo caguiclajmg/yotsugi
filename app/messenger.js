@@ -3,6 +3,8 @@
 const rp = require("request-promise"),
       config = require("../config");
 
+const MAX_MESSAGE_LENGTH = 2000;
+
 const sendResponse = (sender_psid, response) => {
     const payload = Object.assign({}, {
         recipient: {
@@ -19,11 +21,24 @@ const sendResponse = (sender_psid, response) => {
 };
 
 const sendText = (sender_psid, text) => {
-    return sendResponse(sender_psid, {
-        message: {
-            text: text
-        }
-    });
+    const chunksCount = Math.ceil(text.length / MAX_MESSAGE_LENGTH),
+          chunks = new Array(chunksCount),
+          sendChunks = (sender_psid, chunks, index = 0) => {
+              sendResponse(sender_psid, {
+                  message: {
+                      text: chunks[chunk]
+                  }
+              })
+              .then((res) => {
+                  if(index < chunks.length) sendChunks(sender_psid, chunks, ++index);
+              });
+          };
+
+    for(let i = 0; i < chunksCount; ++i) {
+        chunks[i] = text.substr(i * MAX_MESSAGE_LENGTH, MAX_MESSAGE_LENGTH);
+    }
+
+    sendChunks(sender_psid, chunks);
 };
 
 const sendAttachmentFromURL = (sender_psid, type, url, is_reusable = true) => {
