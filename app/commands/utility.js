@@ -50,9 +50,7 @@ const weather = (sender_psid, params) => {
         "json": true
         })
         .then((res) => {
-            messenger.sendText(sender_psid, `${res.name} Weather
-                                             Type: ${res.weather[0].main} (${res.weather[0].description})
-                                             Temperature: ${res.main.temp - 273.15}C`);
+            messenger.sendText(sender_psid, `${res.name} Weather\nType: ${res.weather[0].main} (${res.weather[0].description})\nTemperature: ${res.main.temp - 273.15}C`);
         })
         .catch((err) => {
             messenger.sendText(sender_psid, "Unable to get weather data!");
