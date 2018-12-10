@@ -4,7 +4,7 @@ const rp = require("request-promise"),
       messenger = require("../messenger"),
       config = require("../../config");
 
-function gelbooru(sender_psid, params) {
+const gelbooru = (sender_psid, params) => {
     return rp({
         "uri": `https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&tags=${encodeURIComponent(params)}&api_key=${config.GELBOORU_KEY}&user_id=${config.GELBOORU_USERID}`,
         "json": true
@@ -20,22 +20,22 @@ function gelbooru(sender_psid, params) {
         });
 }
 
-function yandere(sender_psid, params) {
+const yandere = (sender_psid, params) => {
 }
 
-function danbooru(sender_psid, params) {
+const danbooru = (sender_psid, params) => {
 }
 
-function rule34(sender_psid, params) {
+const rule34 = (sender_psid, params) => {
 }
 
-function sankakucomplex(sender_psid, params) {
+const sankakucomplex = (sender_psid, params) => {
 }
 
 module.exports = {
-    "gelbooru": gelbooru,
-    "yandere": yandere,
-    "danbooru": danbooru,
-    "rule34": rule34,
-    "sankakucomplex": sankakucomplex
+    gelbooru,
+    yandere,
+    danbooru,
+    rule34,
+    sankakucomplex
 }
