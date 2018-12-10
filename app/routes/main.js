@@ -6,12 +6,12 @@ const express = require("express"),
       messenger = require("../messenger"),
       router = express.Router();
 
-router.get('/webhook', (req, res) => {
-    const mode = req.query['hub.mode'],
-          token = req.query['hub.verify_token'],
-          challenge = req.query['hub.challenge'];
+router.get("/webhook", (req, res) => {
+    const mode = req.query["hub.mode"],
+          token = req.query["hub.verify_token"],
+          challenge = req.query["hub.challenge"];
 
-    if(!mode || mode !== 'subscribe') {
+    if(!mode || mode !== "subscribe") {
         res.sendStatus(500);
         return;
     }
@@ -24,10 +24,10 @@ router.get('/webhook', (req, res) => {
     res.status(200).send(challenge);
 });
 
-router.post('/webhook', (req, res) => {
+router.post("/webhook", (req, res) => {
     let body = req.body;
 
-    if(body.object !== 'page') {
+    if(body.object !== "page") {
         res.sendStatus(404);
         return;
     }
@@ -45,7 +45,7 @@ router.post('/webhook', (req, res) => {
         }
     });
 
-    res.status(200).send('EVENT_RECEIVED');
+    res.status(200).send("EVENT_RECEIVED");
 });
 
 function handleMessage(sender_psid, received_message) {
@@ -58,8 +58,8 @@ function handleMessage(sender_psid, received_message) {
 
     message = message.slice(config.COMMAND_PREFIX.length);
 
-    let [command, ...params] = message.split(' ');
-    params = params.join(' ');
+    let [command, ...params] = message.split(" ");
+    params = params.join(" ");
 
     if(commands.hasOwnProperty(command)) {
         commands[command](sender_psid, params);
