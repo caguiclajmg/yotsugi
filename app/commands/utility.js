@@ -19,7 +19,7 @@ const translate = (sender_psid, params) => {
         .catch((err) => {
             messenger.sendText(sender_psid, "Unable to translate text!");
         });
-}
+};
 
 const wikipedia = (sender_psid, params) => {
     return rp({
@@ -42,9 +42,25 @@ const wikipedia = (sender_psid, params) => {
         .catch((err) => {
             messenger.sendText(sender_psid, "Unable to fetch article!");
         });
-}
+};
+
+const weather = (sender_psid, params) => {
+    return rp({
+        "uri": `https://api.openweathermap.org/data/2.5/weather?zip=${params}&appid=${config.OPENWEATHERMAP_KEY}`,
+        "json": true
+        })
+        .then((res) => {
+            messenger.sendText(sender_psid, `${res.name} Weather\n
+                                             Type: ${res.weather.main} (${res.weather.description})\n
+                                             Temperature: ${res.main.temp}F`);
+        })
+        .catch((err) => {
+            messenger.sendText(sender_psid, "Unable to get weather data!");
+        });
+};
 
 module.exports = {
     translate,
-    wikipedia
+    wikipedia,
+    weather
 }
