@@ -4,6 +4,7 @@ const rp = require("request-promise"),
       config = require("../config");
 
 const MAX_MESSAGE_LENGTH = 2000;
+const MAX_CHUNK_COUNT = 8;
 
 const sendResponse = (sender_psid, response) => {
     const payload = Object.assign({}, {
@@ -21,7 +22,7 @@ const sendResponse = (sender_psid, response) => {
 };
 
 const sendText = (sender_psid, text) => {
-    const chunksCount = Math.ceil(text.length / MAX_MESSAGE_LENGTH),
+    const chunksCount = Math.min(Math.ceil(text.length / MAX_MESSAGE_LENGTH), MAX_CHUNK_COUNT),
           chunks = new Array(chunksCount),
           sendChunks = (sender_psid, chunks, index = 0) => {
               console.log(`Sending chunk ${index}`);
