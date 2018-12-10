@@ -4,7 +4,7 @@ const rp = require("request-promise"),
       messenger = require("../messenger"),
       config = require("../../config");
 
-function translate(sender_psid, params) {
+const translate = (sender_psid, params) => {
     let [lang, ...text] = params.split(" ");
     text = text.join(" ");
 
@@ -21,5 +21,5 @@ function translate(sender_psid, params) {
 }
 
 module.exports = {
-    "translate": translate,
+    translate
 }
