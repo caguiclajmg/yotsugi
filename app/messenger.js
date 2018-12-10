@@ -52,5 +52,6 @@ function sendTypingIndicator(sender_psid, status) {
 module.exports = {
     "sendResponse": sendResponse,
     "sendText": sendText,
-    "sendTypingIndicator": sendTypingIndicator
+    "sendTypingIndicator": sendTypingIndicator,
+    "sendAttachmentFromURL": sendAttachmentFromURL
 };
