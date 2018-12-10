@@ -24,6 +24,7 @@ const sendText = (sender_psid, text) => {
     const chunksCount = Math.ceil(text.length / MAX_MESSAGE_LENGTH),
           chunks = new Array(chunksCount),
           sendChunks = (sender_psid, chunks, index = 0) => {
+              console.log(`Sending chunk ${index}`);
               sendResponse(sender_psid, {
                   message: {
                       text: chunks[index]
