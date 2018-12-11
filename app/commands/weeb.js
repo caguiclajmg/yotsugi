@@ -5,7 +5,9 @@ const rp = require("request-promise"),
       config = require("../../config");
 
 const ratewaifu = (sender_psid, params) => {
-    if(params.toUpperCase() === "Satania".toUpperCase() ||
+    if(!params) {
+        messenger.sendText(sender_psid, "Type in the name of your waifu! (Example: !ratewaifu Satania)");
+    } else if(params.toUpperCase() === "Satania".toUpperCase() ||
        params.toUpperCase() === "Satanichia Kurumizawa McDowell".toUpperCase()) {
         messenger.sendAttachmentFromURL(sender_psid, "video", "https://simg3.gelbooru.com//images/7e/30/7e30b74b172268369138ff0ed078bf9a.webm");
         messenger.sendText(sender_psid, "Ah, I see you're a デビル of culture as well.");
