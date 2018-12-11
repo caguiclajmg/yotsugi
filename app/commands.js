@@ -15,7 +15,7 @@ function loadModule(path) {
 function loadCoreModules() {
     let commands;
 
-    ["utility"].forEach((module) => {
+    ["utility", "weeb"].forEach((module) => {
         console.log(`Loading module: ${module}`);
         commands = Object.assign({}, commands, loadModule(`./commands/${module}`));
     });
