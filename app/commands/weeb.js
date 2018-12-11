@@ -21,10 +21,9 @@ const ratewaifu = (sender_psid, params) => {
         }
     }
 
-
     messenger.sendText(sender_psid, rating);
 }
 
 module.exports = {
-    gelbooru,
+    ratewaifu,
 }
