@@ -73,6 +73,7 @@ function handleMessage(sender_psid, received_message) {
         ];
 
         messenger.sendText(sender_psid, "イェーイ、ピースピース！\n\nPlease check the page for the list of available commands.");
+        messenger.sendTemplate(sender_psid, elements);
         return;
     }
 
