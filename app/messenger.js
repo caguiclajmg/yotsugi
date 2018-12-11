@@ -25,7 +25,6 @@ const sendText = (sender_psid, text) => {
     const chunksCount = Math.min(Math.ceil(text.length / MAX_MESSAGE_LENGTH), MAX_CHUNK_COUNT),
           chunks = new Array(chunksCount),
           sendChunks = (sender_psid, chunks, index = 0) => {
-              console.log(`Sending chunk ${index}`);
               sendResponse(sender_psid, {
                   message: {
                       text: chunks[index]
@@ -43,29 +42,42 @@ const sendText = (sender_psid, text) => {
     sendChunks(sender_psid, chunks);
 };
 
-const sendAttachmentFromURL = (sender_psid, type, url, is_reusable = true) => {
+const sendAttachment = (sender_psid, type, payload) => {
     return sendResponse(sender_psid, {
         message: {
             attachment: {
                 type: type,
-                payload: {
-                    url: url,
-                    is_reusable: is_reusable
-                }
+                payload: payload
             }
         }
     });
-}
+};
+
+const sendAttachmentFromURL = (sender_psid, type, url, is_reusable = false) => {
+    return sendAttachment(sender_psid, type, {
+        url: url,
+        is_reusable: is_reusable
+    });
+};
+
+const sendTemplate = (sender_psid, elements) => {
+    return sendAttachment(sender_psid, "template", {
+        template_type: "generic",
+        elements: elements
+    });
+};
 
 const sendTypingIndicator = (sender_psid, status) => {
     return sendResponse(sender_psid, {
         sender_action: status ? "typing_on" : "typing_off"
     });
-}
+};
 
 module.exports = {
     sendResponse,
     sendText,
+    sendAttachment,
     sendAttachmentFromURL,
+    sendTemplate,
     sendTypingIndicator
 };

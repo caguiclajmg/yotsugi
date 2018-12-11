@@ -52,7 +52,19 @@ function handleMessage(sender_psid, received_message) {
     let message = received_message.text;
 
     if(!message || !message.startsWith(config.COMMAND_PREFIX)) {
-        messenger.sendText(sender_psid, "こんにちは！");
+        messenger.sendText(sender_psid, "イェーイ、ピースピース！\n\nPlease check the page for the list of available commands.");
+        messenger.sendTemplate(sender_psid, [
+            {
+                title: "Yotsugi",
+                image_url: "https://s3-us-west-2.amazonaws.com/yotsugi.caguicla.me/logo.png",
+                subtitle: "A multi-purpose chatbot",
+                default_action: {
+                    type: "web_url",
+                    url: "https://www.facebook.com/YotsugiBot/",
+                    webview_height_ratio: "tall"
+                }
+            }
+        ]);
         return;
     }
 
