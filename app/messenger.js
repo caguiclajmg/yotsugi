@@ -51,20 +51,27 @@ const sendAttachment = (sender_psid, type, payload) => {
             }
         }
     });
-}
+};
 
 const sendAttachmentFromURL = (sender_psid, type, url, is_reusable = false) => {
     return sendAttachment(sender_psid, type, {
         url: url,
         is_reusable: is_reusable
     });
-}
+};
+
+const sendTemplate = (sender_psid, elements) => {
+    return sendAttachment(sender_psid, "template", {
+        template_type: "generic",
+        elements: elements
+    });
+};
 
 const sendTypingIndicator = (sender_psid, status) => {
     return sendResponse(sender_psid, {
         sender_action: status ? "typing_on" : "typing_off"
     });
-}
+};
 
 module.exports = {
     sendResponse,
