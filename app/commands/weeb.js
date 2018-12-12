@@ -82,7 +82,7 @@ const eightball = (sender_psid, params) => {
     };
 
     var category = Object.keys(EIGHTBALL_REPLIES)[Math.floor(Math.random() * (EIGHTBALL_REPLIES.length + 1))];
-    var reply = category[Math.floor(Math.random() * (category.length + 1))];
+    var reply = EIGHTBALL_REPLIES[category][Math.floor(Math.random() * (category.length + 1))];
 
     if(params[params.length - 1] !== "?") params += "?";
 
