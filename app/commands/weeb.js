@@ -82,7 +82,7 @@ const eightball = (sender_psid, params) => {
     var category = EIGHTBALL_REPLIES[Math.floor(Math.random() * (EIGHTBALL_REPLIES.length + 1))];
     var reply = category[Math.floor(Math.random() * (category.length + 1))];
 
-    messenger.sendText(`${params}\n${reply}`);
+    messenger.sendText(sender_psid, `${params}\n${reply}`);
 }
 
 module.exports = {
