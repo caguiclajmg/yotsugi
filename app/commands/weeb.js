@@ -27,7 +27,7 @@ const ratewaifu = (sender_psid, params) => {
 
 const safebooru = (sender_psid, params) => {
     return rp({
-        "uri": `https://safebooru.org/index.php?page=dapi&s=post&q=index&json=1&limit=500&tags=${encodeURIComponent(params)}`,
+        "uri": `https://safebooru.org/index.php?page=dapi&s=post&q=index&json=1&limit=200&tags=${encodeURIComponent(params + " rating:safe")}`,
         "json": true
         })
         .then((res) => {
