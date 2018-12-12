@@ -71,6 +71,7 @@ function handleMessage(sender_psid, received_message) {
     message = message.slice(config.COMMAND_PREFIX.length);
 
     let [command, ...params] = message.split(" ");
+    command = command.toLowerCase();
     params = params.join(" ");
 
     if(commands.hasOwnProperty(command)) {
