@@ -13,10 +13,18 @@ const ratewaifu = (sender_psid, params) => {
         messenger.sendText(sender_psid, "Ah, I see you're a デビル of culture as well.");
     } else {
         let rating;
-        const score = Math.floor(Math.random() * 10);
+        const score = Math.floor(Math.random() * 11);
 
         if(score <= 2) {
             rating = `${params} is trash and you have shit taste. ${score}/10`;
+        } else if(score >= 3 && score <= 4) {
+            rating = `Normie taste, but ok. I'd give ${params} a ${score}/10.`;
+        } else if(score >= 5 && score <= 6) {
+            rating = `I'd say ${params} is a decent ${score}/10 waifu.`;
+        } else if(score >= 7 && score <= 8) {
+            rating = `${params} is a qt, ${score}/10 waifu.`;
+        } else if(score >= 9 && score <= 10) {
+            rating = `Of course, ${params} is best girl. ${score}/10`;
         } else {
             rating = `I'd rate ${params} a ${score}/10`;
         }
