@@ -25,6 +25,23 @@ const ratewaifu = (sender_psid, params) => {
     }
 }
 
+const safebooru = (sender_psid, params) => {
+    return rp({
+        "uri": `https://safebooru.org/index.php?page=dapi&s=post&q=index&json=1&limit=200&tags=${encodeURIComponent(params + " rating:safe")}`,
+        "json": true
+        })
+        .then((res) => {
+            const index = Math.floor(Math.random() * Math.floor(res.length)),
+                  url = `https://safebooru.org//images/${res[index].directory}/${res[index].image}`
+
+            messenger.sendAttachmentFromURL(sender_psid, "image", url);
+        })
+        .catch((err) => {
+            messenger.sendText(sender_psid, "Unable to fetch results from Safebooru!");
+        });
+}
+
 module.exports = {
     ratewaifu,
+    safebooru
 }
