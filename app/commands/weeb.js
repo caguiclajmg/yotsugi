@@ -75,7 +75,7 @@ const eightball = (sender_psid, params) => {
         "Very doubtful."
     ];
 
-    messenger.sendText(sender_psid, `${params}\n${EIGHTBALL_REPLIES[Math.floor(Math.random() * (category.length + 1))]}`);
+    messenger.sendText(sender_psid, `${params}\n${EIGHTBALL_REPLIES[Math.floor(Math.random() * (EIGHTBALL_REPLIES.length + 1))]}`);
 }
 
 module.exports = {
