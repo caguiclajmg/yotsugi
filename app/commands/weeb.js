@@ -50,6 +50,11 @@ const safebooru = (sender_psid, params) => {
 }
 
 const eightball = (sender_psid, params) => {
+    if(!params || !/\S/.test(params)) {
+        messenger.sendText(sender_psid, "Please enter your question. (ex. !eightball Are traps gay?)");
+        return;
+    }
+
     const EIGHTBALL_REPLIES = [
         "It is certain.",
         "It is decidedly so.",
