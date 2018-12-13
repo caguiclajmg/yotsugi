@@ -1,12 +1,11 @@
 "use strict";
 
 const config = require("../config"),
-      pgp = require("pg-promise")();
+      pgp = require("pg-promise")(),
+      db = pgp(config.DATABASE_URL);
 
 const query = (query, params) => {
-    const db = pgp(config.DATABASE_URL);
-
-    return db.any(query, params);
+    return db.query(query, params);
 };
 
 module.exports = {
