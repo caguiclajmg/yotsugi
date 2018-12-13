@@ -25,7 +25,7 @@ const sendText = async (sender_psid, text) => {
     const chunks = text.match(new RegExp(`.{1,${MAX_MESSAGE_LENGTH}}`, "g"));
 
     let responses = new Array(chunks.length);
-    for(let index = 0; index < chunks.length; ++i) {
+    for(let index = 0; index < chunks.length; ++index) {
         const payload = {
             message: {
                 text: chunks[index]
