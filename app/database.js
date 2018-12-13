@@ -14,7 +14,7 @@ const getNickname = async(sender_psid) => {
 };
 
 const setNickname = async(sender_psid, nickname) => {
-    if(!nickname || !/\S/.match(nickname)) {
+    if(!nickname || !/\S/.test(nickname)) {
         return await db.oneOrNone("DELETE FROM consumer WHERE psid = ${psid}", { psid: sender_psid }, consumer => consumer.nickname);
     }
 
