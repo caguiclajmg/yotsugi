@@ -39,6 +39,8 @@ const ratewaifu = async (sender_psid, params) => {
 
 const safebooru = async (sender_psid, params) => {
     try {
+        await messenger.sendTypingIndicator(sender_psid, true);
+
         const results = await rp.get({
             uri: `https://safebooru.org/index.php?page=dapi&s=post&q=index&json=1&limit=200&tags=${encodeURIComponent(params + " rating:safe")}`,
             json: true
@@ -53,6 +55,8 @@ const safebooru = async (sender_psid, params) => {
         await messenger.sendAttachmentFromURL(sender_psid, "image", url);
     } catch(err) {
         await messenger.sendText(sender_psid, "No images with specified tags found!");
+    } finally {
+        await messenger.sendTypingIndicator(sender_psid, false);
     }
 }
 
