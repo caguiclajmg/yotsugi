@@ -6,6 +6,8 @@ module.exports = {
     "APP_VERIFY_TOKEN": process.env.APP_VERIFY_TOKEN,
     "APP_PAGE_TOKEN": process.env.APP_PAGE_TOKEN,
 
+    "DATABASE_URL": process.env.DATABASE_URL,
+
     "COMMAND_PREFIX": process.env.COMMAND_PREFIX || "!",
 
     "GELBOORU_KEY": process.env.GELBOORU_KEY,
