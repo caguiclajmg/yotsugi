@@ -27,8 +27,6 @@ const sendText = async (sender_psid, text) => {
 
     let responses = new Array(chunks.length);
     for(let index = 0; index < chunks.length; ++index) {
-        if(!chunks[index]) continue;
-
         const payload = {
             message: {
                 text: chunks[index]
