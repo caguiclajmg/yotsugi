@@ -16,6 +16,12 @@ const ratewaifu = async (sender_psid, params) => {
         return;
     }
 
+    if(params.toUpperCase() === 'Yotsugi'.toUpperCase()) {
+        await messenger.sendText(sender_psid, "Yay~ Peace, Peace!");
+        await messenger.sendAttachmentFromURL(sender_psid, "image", "https://simg3.gelbooru.com//images/04/ea/04eab4e28d24fe39ea79018fd29d6009.gif");
+        return;
+    }
+
     const score = Math.floor(Math.random() * 11);
 
     let rating;
