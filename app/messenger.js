@@ -91,5 +91,6 @@ module.exports = {
     sendAttachment,
     sendAttachmentFromURL,
     sendTemplate,
-    sendTypingIndicator
+    sendTypingIndicator,
+    sendSeenIndicator
 };
