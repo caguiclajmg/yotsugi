@@ -1,0 +1,5 @@
+language: nodejs
+node_js:
+    - "node"
+env:
+    - NODE_ENV=TEST
