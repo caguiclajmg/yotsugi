@@ -37,7 +37,7 @@ router.post("/webhook", (req, res) => {
               sender_psid = webhook_event.sender.id;
 
         if(webhook_event.message) {
-            handleMessage(sender_psid, webhook_event.message);
+            handleMessage(sender_psid, webhook_event.message).catch((err) => {});
         } else if(webhook_event.postback) {
             handlePostback(sender_psid, webhook_event.postback);
         } else {
@@ -48,7 +48,7 @@ router.post("/webhook", (req, res) => {
     res.status(200).send("EVENT_RECEIVED");
 });
 
-function handleMessage(sender_psid, received_message) {
+async function handleMessage(sender_psid, received_message) {
     let message = received_message.text;
 
     if(!message || !message.startsWith(config.COMMAND_PREFIX)) {
