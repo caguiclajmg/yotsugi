@@ -15,7 +15,7 @@ const sendResponse = async (sender_psid, response) => {
             access_token: config.APP_PAGE_TOKEN
         },
         method: "POST",
-        json: payload
+        json: response
     };
 
     return await rp(options);
