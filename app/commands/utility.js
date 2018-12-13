@@ -67,6 +67,7 @@ const callme = (sender_psid, params) => {
         messenger.sendText(sender_psid, "Yay! I will now call you ${params}!");
     })
     .catch((err) => {
+        console.log(err);
         messenger.sendText(sender_psid, "Unable to set nickname!");
     });
 };
