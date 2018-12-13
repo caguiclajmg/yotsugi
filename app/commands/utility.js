@@ -23,9 +23,8 @@ const translate = async (sender_psid, params) => {
             json: true
         });
 
-        await messenger.sendText(sender_psid, `${translation.text[0]}\nPowered by Yandex.Translate`);
+        await messenger.sendText(sender_psid, `${translation.text[0]}\n\nPowered by Yandex.Translate`);
     } catch(err) {
-        console.log(err);
         await messenger.sendText(sender_psid, "Unable to translate text, please try again later.");
     } finally {
         await messenger.sendTypingIndicator(sender_psid, false);
