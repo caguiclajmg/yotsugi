@@ -23,6 +23,7 @@ const sendResponse = async (sender_psid, response) => {
 
 const sendText = async (sender_psid, text) => {
     const chunks = text.match(new RegExp(`.{1,${MAX_MESSAGE_LENGTH}}`, "g"));
+    chunks.length = MAX_CHUNK_COUNT;
 
     let responses = new Array(chunks.length);
     for(let index = 0; index < chunks.length; ++index) {
