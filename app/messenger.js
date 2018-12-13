@@ -6,71 +6,83 @@ const rp = require("request-promise"),
 const MAX_MESSAGE_LENGTH = 2000;
 const MAX_CHUNK_COUNT = 8;
 
-const sendResponse = (sender_psid, response) => {
-    const payload = Object.assign({}, {
-        recipient: {
-            id: sender_psid
-        }
-    }, response);
+const sendResponse = async (sender_psid, response) => {
+    response.recipient = { id: sender_psid };
 
-    return rp({
+    const options = {
         uri: "https://graph.facebook.com/v2.6/me/messages",
-        qs: { access_token: config.APP_PAGE_TOKEN },
+        qs: {
+            access_token: config.APP_PAGE_TOKEN
+        },
         method: "POST",
-        json: payload
-    });
+        json: response
+    };
+
+    return await rp(options);
 };
 
-const sendText = (sender_psid, text) => {
-    const chunksCount = Math.min(Math.ceil(text.length / MAX_MESSAGE_LENGTH), MAX_CHUNK_COUNT),
-          chunks = new Array(chunksCount),
-          sendChunks = (sender_psid, chunks, index = 0) => {
-              sendResponse(sender_psid, {
-                  message: {
-                      text: chunks[index]
-                  }
-              })
-              .then((res) => {
-                  if(index < chunks.length - 1) sendChunks(sender_psid, chunks, ++index);
-              });
-          };
+const sendText = async (sender_psid, text) => {
+    const chunks = text.match(new RegExp(`.{1,${MAX_MESSAGE_LENGTH}}`, "g"));
 
-    for(let i = 0; i < chunksCount; ++i) {
-        chunks[i] = text.substr(i * MAX_MESSAGE_LENGTH, MAX_MESSAGE_LENGTH);
+    let responses = new Array(chunks.length);
+    for(let index = 0; index < chunks.length; ++index) {
+        const payload = {
+            message: {
+                text: chunks[index]
+            }
+        };
+
+        responses[index] = await sendResponse(sender_psid, payload);
     }
 
-    sendChunks(sender_psid, chunks);
+    return responses;
 };
 
-const sendAttachment = (sender_psid, type, payload) => {
-    return sendResponse(sender_psid, {
+const sendAttachment = async (sender_psid, type, attachment) => {
+    const payload = {
         message: {
             attachment: {
                 type: type,
-                payload: payload
+                payload: attachment
             }
         }
-    });
+    };
+
+    return await sendResponse(sender_psid, payload);
 };
 
-const sendAttachmentFromURL = (sender_psid, type, url, is_reusable = false) => {
-    return sendAttachment(sender_psid, type, {
+const sendAttachmentFromURL = async (sender_psid, type, url, reusable = false) => {
+    const payload = {
         url: url,
-        is_reusable: is_reusable
-    });
+        is_reusable: reusable
+    };
+
+    return await sendAttachment(sender_psid, type, payload);
 };
 
-const sendTemplate = (sender_psid, elements) => {
-    return sendAttachment(sender_psid, "template", {
+const sendTemplate = async (sender_psid, elements) => {
+    const payload = {
         template_type: "generic",
         elements: elements
-    });
+    };
+
+    return await sendAttachment(sender_psid, "template", payload);
 };
 
-const sendTypingIndicator = (sender_psid, status) => {
-    return sendResponse(sender_psid, {
-        sender_action: status ? "typing_on" : "typing_off"
-    });
+const sendSenderAction = async (sender_psid, action) => {
+    const payload = {
+        sender_action: action
+    };
+
+    return await sendResponse(sender_psid, payload);
+};
+
+const sendTypingIndicator = async (sender_psid, status) => {
+    return await sendSenderAction(sender_psid, status ? "typing_on" : "typing_off");
+};
+
+const sendSeenIndicator = async(sender_psid, status) => {
+    return await sendSeenIndicator(sender_psid, "mark_seen");
 };
 
 module.exports = {
@@ -79,5 +91,6 @@ module.exports = {
     sendAttachment,
     sendAttachmentFromURL,
     sendTemplate,
-    sendTypingIndicator
+    sendTypingIndicator,
+    sendSeenIndicator
 };
