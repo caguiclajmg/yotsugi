@@ -54,7 +54,7 @@ const safebooru = async (sender_psid, params) => {
 
         await messenger.sendAttachmentFromURL(sender_psid, "image", url);
     } catch(err) {
-        await messenger.sendText(sender_psid, "No images with specified tags found!");
+        await messenger.sendText(sender_psid, "No images with specified tags found.");
     } finally {
         await messenger.sendTypingIndicator(sender_psid, false);
     }
