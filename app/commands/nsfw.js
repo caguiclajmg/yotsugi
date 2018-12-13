@@ -18,19 +18,19 @@ const gelbooru = (sender_psid, params) => {
         .catch((err) => {
             messenger.sendText(sender_psid, "Unable to fetch results from Gelbooru!");
         });
-}
+};
 
 const yandere = (sender_psid, params) => {
-}
+};
 
 const danbooru = (sender_psid, params) => {
-}
+};
 
 const rule34 = (sender_psid, params) => {
-}
+};
 
 const sankakucomplex = (sender_psid, params) => {
-}
+};
 
 module.exports = {
     gelbooru,
@@ -38,4 +38,4 @@ module.exports = {
     danbooru,
     rule34,
     sankakucomplex
-}
+};

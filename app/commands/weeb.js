@@ -41,7 +41,7 @@ const ratewaifu = async (sender_psid, params) => {
     }
 
     await messenger.sendText(sender_psid, rating);
-}
+};
 
 const safebooru = async (sender_psid, params) => {
     try {
@@ -64,7 +64,7 @@ const safebooru = async (sender_psid, params) => {
     } finally {
         await messenger.sendTypingIndicator(sender_psid, false);
     }
-}
+};
 
 const EIGHTBALL_REPLIES = [
     "It is certain.",
@@ -101,10 +101,13 @@ const eightball = async (sender_psid, params) => {
           reply = EIGHTBALL_REPLIES[index];
 
     await messenger.sendText(sender_psid, reply);
-}
+};
+
+const flipcoin = async(sender_psid, params) => {
+};
 
 module.exports = {
     ratewaifu,
     safebooru,
     eightball
-}
+};
