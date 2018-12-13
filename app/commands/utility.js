@@ -60,7 +60,7 @@ const weather = (sender_psid, params) => {
 
 const callme = async (sender_psid, params) => {
     if(!params) {
-        const nickname = database.getNickname(sender_psid);
+        const nickname = await database.getNickname(sender_psid);
 
         messenger.sendText(sender_psid, nickname ? `Your nickname is ${nickname}.` : "You have no nickname set.");
         return;
