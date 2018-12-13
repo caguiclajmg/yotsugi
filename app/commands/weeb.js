@@ -103,9 +103,6 @@ const eightball = async (sender_psid, params) => {
     await messenger.sendText(sender_psid, reply);
 };
 
-const flipcoin = async(sender_psid, params) => {
-};
-
 module.exports = {
     ratewaifu,
     safebooru,
