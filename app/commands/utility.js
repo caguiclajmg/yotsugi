@@ -65,7 +65,7 @@ const wikipedia = async (sender_psid, params) => {
 };
 
 const weather = async (sender_psid, params) => {
-    if(!/[0-9]+,[a-zA-Z]{2}/.test(params)) {
+    if(!/[0-9]+,[a-zA-Z]{2}$/.test(params)) {
         await messenger.sendText(sender_psid, "Enter your ZIP code and 2-letter country code. (Example: !weather 4024,ph)");
         return;
     }
