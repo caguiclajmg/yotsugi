@@ -3,7 +3,8 @@
 const rp = require("request-promise"),
       h2p = require("html2plaintext"),
       messenger = require("../messenger"),
-      config = require("../../config");
+      config = require("../../config"),
+      database = require("../database");
 
 const translate = (sender_psid, params) => {
     let [lang, ...text] = params.split(" ");
@@ -57,8 +58,22 @@ const weather = (sender_psid, params) => {
         });
 };
 
+const callme = (sender_psid, params) => {
+    return database.query("INSERT INTO consumer (psid, nickname) VALUES (${this:psid}, ${this:nickname}) ON CONFLICT (psid) DO UPDATE SET nickname=${this:nickname};", {
+        psid: sender_psid,
+        nickname: params
+    })
+    .then((res) => {
+        messenger.sendText(sender_psid, "Yay! I will now call you ${params}!");
+    })
+    .catch((err) => {
+        messenger.sendText(sender_psid, "Unable to set nickname!");
+    });
+};
+
 module.exports = {
     translate,
     wikipedia,
-    weather
+    weather,
+    callme
 }
