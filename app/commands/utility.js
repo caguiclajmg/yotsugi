@@ -2,60 +2,87 @@
 
 const rp = require("request-promise"),
       h2p = require("html2plaintext"),
-      messenger = require("../messenger"),
       config = require("../../config"),
+      messenger = require("../messenger"),
       database = require("../database");
 
-const translate = (sender_psid, params) => {
+const translate = async (sender_psid, params) => {
     let [lang, ...text] = params.split(" ");
     text = text.join(" ");
 
-    return rp({
-        "uri": `https://translate.yandex.net/api/v1.5/tr.json/translate?key=${config.YANDEX_TRANSLATE_KEY}&text=${encodeURIComponent(text)}&lang=${lang}`,
-        "json": true
-        })
-        .then((res) => {
-            messenger.sendText(sender_psid, `${res.text[0]}\n\nPowered by Yandex.Translate`);
-        })
-        .catch((err) => {
-            messenger.sendText(sender_psid, "Unable to translate text!");
+    if(!lang || !text) {
+        await messenger.sendText(sender_psid, "Enter the destination language and the text you want to translate. (Example: !translate en こんにちは)");
+        return;
+    }
+
+    try {
+        await messenger.sendTypingIndicator(sender_psid, true);
+
+        const translation = await rp.get({
+            uri: `https://translate.yandex.net/api/v1.5/tr.json/translate?key=${config.YANDEX_TRANSLATE_KEY}&text=${encodeURIComponent(text)}&lang=${lang}`,
+            json: true
         });
+
+        await messenger.sendText(sender_psid, `${translation.text[0]}\n\nPowered by Yandex.Translate`);
+    } catch(err) {
+        await messenger.sendText(sender_psid, "Unable to translate text, please try again later.");
+    } finally {
+        await messenger.sendTypingIndicator(sender_psid, false);
+    }
 };
 
-const wikipedia = (sender_psid, params) => {
-    return rp({
-        "uri": `https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&utf8=1&srsearch=${encodeURIComponent(params)}`,
-        "json": true
-        })
-        .then((res) => {
-            rp({
-                "uri": `https://en.wikipedia.org/w/api.php?action=parse&format=json&prop=text&page=${res.query.search[0].title}`,
-                "json": true
-                })
-                .then((res) => {
-                    var text = h2p(res.parse.text["*"]);
-                    messenger.sendText(sender_psid, `${text}`);
-                })
-                .catch((err) => {
-                    messenger.sendText(sender_psid, "Unable to fetch article!");
-                });
-        })
-        .catch((err) => {
-            messenger.sendText(sender_psid, "Unable to fetch article!");
+const wikipedia = async (sender_psid, params) => {
+    if(!params || !/\S/.test(params)) {
+        await messenger.sendText(sender_psid, "Enter the name of the article to look up. (Example: !wikipedia Nisio Isin)");
+        return;
+    }
+
+    try {
+        await messenger.sendTypingIndicator(sender_psid, true);
+
+        const articles = await rp.get({
+            uri: `https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&utf8=1&srsearch=${encodeURIComponent(params)}`,
+            json: true
         });
+
+        if(articles.query.search.length === 0) {
+            await messenger.sendText(sender_psid, "No articles with specified title found.");
+            return
+        }
+
+        const article = await rp.get({
+            uri: `https://en.wikipedia.org/w/api.php?action=parse&format=json&prop=text&page=${articles.query.search[0].title}`,
+            json: true
+        });
+
+        const text = h2p(article.parse.text["*"]);
+        await messenger.sendText(sender_psid, text);
+    } catch(err) {
+        await messenger.sendText(sender_psid, "Unable to get article from Wikipedia, please try again later.");
+    } finally {
+        await messenger.sendTypingIndicator(sender_psid, false);
+    }
 };
 
-const weather = (sender_psid, params) => {
-    return rp({
-        "uri": `https://api.openweathermap.org/data/2.5/weather?zip=${params}&appid=${config.OPENWEATHERMAP_KEY}`,
-        "json": true
-        })
-        .then((res) => {
-            messenger.sendText(sender_psid, `${res.name} Weather\nType: ${res.weather[0].main} (${res.weather[0].description})\nTemperature: ${res.main.temp - 273.15}C`);
-        })
-        .catch((err) => {
-            messenger.sendText(sender_psid, "Unable to get weather data!");
+const weather = async (sender_psid, params) => {
+    if(!/[0-9]+,[a-zA-Z]{2}$/.test(params)) {
+        await messenger.sendText(sender_psid, "Enter your ZIP code and 2-letter country code. (Example: !weather 4024,ph)");
+        return;
+    }
+
+    try {
+        await messenger.sendTypingIndicator(sender_psid, true);
+        const weather = await rp.get({
+            uri: `https://api.openweathermap.org/data/2.5/weather?zip=${params}&appid=${config.OPENWEATHERMAP_KEY}`,
+            json: true
         });
+
+        await messenger.sendText(sender_psid, `${weather.name} Weather\nType: ${weather.weather[0].main} (${weather.weather[0].description})\nTemperature: ${weather.main.temp - 273.15}C`);
+    } catch(err) {
+        await messenger.sendText(sender_psid, "Unable to get weather data from OpenWeatherMap, please try again later.");
+    } finally {
+        await messenger.sendTypingIndicator(sender_psid, false);
+    }
 };
 
 const callme = async (sender_psid, params) => {
