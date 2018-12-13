@@ -75,6 +75,5 @@ const callme = (sender_psid, params) => {
 module.exports = {
     translate,
     wikipedia,
-    weather,
-    callme
+    weather
 }
