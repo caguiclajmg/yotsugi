@@ -57,7 +57,7 @@ const sendAttachmentFromURL = async (sender_psid, type, url, reusable = false) =
         is_reusable: reusable
     };
 
-    return await sendAttachment(sender_psid, payload);
+    return await sendAttachment(sender_psid, type, payload);
 };
 
 const sendTemplate = async (sender_psid, elements) => {
