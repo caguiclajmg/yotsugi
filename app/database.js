@@ -22,7 +22,6 @@ const setNickname = async(sender_psid, nickname) => {
 };
 
 module.exports = {
-    query,
     getNickname,
     setNickname
 };
