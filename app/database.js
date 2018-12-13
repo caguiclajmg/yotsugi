@@ -15,13 +15,14 @@ const getNickname = async(sender_psid) => {
 
 const setNickname = async(sender_psid, nickname) => {
     if(!nickname || !/\S/.test(nickname)) {
-        return await db.oneOrNone("DELETE FROM consumer WHERE psid = ${psid}", { psid: sender_psid }, consumer => consumer.nickname);
+        await db.any("DELETE FROM consumer WHERE psid = ${psid}", { psid: sender_psid });
+        return;
     }
 
-    return await db.one("INSERT INTO consumer (psid, nickname) VALUES (${psid}, ${nickname}) ON CONFLICT (psid) DO UPDATE SET nickname = ${nickname};", {
+    await db.any("INSERT INTO consumer (psid, nickname) VALUES (${psid}, ${nickname}) ON CONFLICT (psid) DO UPDATE SET nickname = ${nickname};", {
         psid: sender_psid,
         nickname: nickname
-    }, consumer => consumer.nickname);
+    });
 };
 
 module.exports = {

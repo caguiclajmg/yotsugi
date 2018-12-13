@@ -60,10 +60,9 @@ const weather = (sender_psid, params) => {
 
 const callme = async (sender_psid, params) => {
     try {
-        const nickname = await database.setNickname(sender_psid, params);
+        await database.setNickname(sender_psid, params);
         await messenger.sendText(sender_psid, `Yay! I will now call you ${nickname}`);
     } catch(err) {
-        console.log(err);
         await messenger.sendText(sender_psid, "I'm currently unable to set your nickname, please try again later.");
     }
 };
