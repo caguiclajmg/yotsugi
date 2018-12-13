@@ -5,10 +5,6 @@ const pgp = require("pg-promise")(),
 
 const db = pgp(config.DATABASE_URL);
 
-const query = async (query, params) => {
-    return await db.query(query, params);
-};
-
 const getNickname = async(sender_psid) => {
     return await db.oneOrNone("SELECT nickname FROM consumer WHERE psid = ${psid}", { psid: sender_psid }, consumer => consumer.nickname);
 };
@@ -26,7 +22,6 @@ const setNickname = async(sender_psid, nickname) => {
 };
 
 module.exports = {
-    query,
     getNickname,
     setNickname
 };

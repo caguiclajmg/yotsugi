@@ -57,7 +57,7 @@ async function handleMessage(sender_psid, received_message) {
             {
                 title: "Yotsugi",
                 image_url: "https://s3-us-west-2.amazonaws.com/yotsugi.caguicla.me/logo.png",
-                subtitle: "A multi-purpose chatbot",
+                subtitle: "A multi-purpose Messenger bot",
                 default_action: {
                     type: "web_url",
                     url: "https://www.facebook.com/YotsugiBot/",

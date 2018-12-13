@@ -99,4 +99,4 @@ module.exports = {
     wikipedia,
     weather,
     callme
-}
+};

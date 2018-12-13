@@ -16,4 +16,4 @@ module.exports = {
     "YANDEX_TRANSLATE_KEY": process.env.YANDEX_TRANSLATE_KEY,
 
     "OPENWEATHERMAP_KEY": process.env.OPENWEATHERMAP_KEY
-}
+};
