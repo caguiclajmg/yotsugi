@@ -25,6 +25,7 @@ const translate = async (sender_psid, params) => {
 
         await messenger.sendText(sender_psid, `${res.text[0]}\nPowered by Yandex.Translate`);
     } catch(err) {
+        console.log(err);
         await messenger.sendText(sender_psid, "Unable to translate text, please try again later.");
     } finally {
         await messenger.sendTypingIndicator(sender_psid, false);
@@ -32,6 +33,11 @@ const translate = async (sender_psid, params) => {
 };
 
 const wikipedia = async (sender_psid, params) => {
+    if(!params || !/\S/.test(params)) {
+        await messenger.sendText(sender_psid, "Enter the name of the article to look up. (Example: !wikipedia Nisio Isin)");
+        return;
+    }
+
     try {
         await messenger.sendTypingIndicator(sender_psid, true);
 
@@ -60,7 +66,7 @@ const wikipedia = async (sender_psid, params) => {
 };
 
 const weather = async (sender_psid, params) => {
-    if(/[0-9]+,[a-zA-Z]{2}/.test(params)) {
+    if(!/[0-9]+,[a-zA-Z]{2}/.test(params)) {
         await messenger.sendText(sender_psid, "Enter your ZIP code and 2-letter country code. (Example: !weather 4024,ph)");
         return;
     }
