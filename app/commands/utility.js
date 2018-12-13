@@ -58,22 +58,18 @@ const weather = (sender_psid, params) => {
         });
 };
 
-const callme = (sender_psid, params) => {
-    return database.query("INSERT INTO consumer (psid, nickname) VALUES (${psid}, ${nickname}) ON CONFLICT (psid) DO UPDATE SET nickname=${nickname};", {
-        psid: sender_psid,
-        nickname: params
-    })
-    .then((res) => {
-        messenger.sendText(sender_psid, `Yay! I will now call you ${params}!`);
-    })
-    .catch((err) => {
-        console.log(err);
-        messenger.sendText(sender_psid, "Unable to set nickname!");
-    });
+const callme = async (sender_psid, params) => {
+    try {
+        const nickname = await database.setNickname(sender_psid, params);
+        await messenger.sendText(sender_psid, `Yay! I will now call you ${nickname}`);
+    } catch(err) {
+        await messenger.sendText(sender_psid, "I'm currently unable to set your nickname, please try again later.");
+    }
 };
 
 module.exports = {
     translate,
     wikipedia,
-    weather
+    weather,
+    callme
 }
