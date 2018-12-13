@@ -59,7 +59,7 @@ const weather = (sender_psid, params) => {
 };
 
 const callme = (sender_psid, params) => {
-    return database.query("INSERT INTO consumer (psid, nickname) VALUES (${this:psid}, ${this:nickname}) ON CONFLICT (psid) DO UPDATE SET nickname=${this:nickname};", {
+    return database.query("INSERT INTO consumer (psid, nickname) VALUES (${psid}, ${nickname}) ON CONFLICT (psid) DO UPDATE SET nickname=${nickname};", {
         psid: sender_psid,
         nickname: params
     })
