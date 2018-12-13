@@ -11,8 +11,8 @@ const ratewaifu = async (sender_psid, params) => {
     }
 
     if(params.toUpperCase() === 'Satania'.toUpperCase()) {
-        await messenger.sendAttachmentFromURL(sender_psid, "video", "https://simg3.gelbooru.com//images/7e/30/7e30b74b172268369138ff0ed078bf9a.webm");
         await messenger.sendText(sender_psid, "Ah, I see you're a デビル of culture as well.");
+        await messenger.sendAttachmentFromURL(sender_psid, "video", "https://simg3.gelbooru.com//images/7e/30/7e30b74b172268369138ff0ed078bf9a.webm");
         return;
     }
 
