@@ -64,7 +64,7 @@ const callme = (sender_psid, params) => {
         nickname: params
     })
     .then((res) => {
-        messenger.sendText(sender_psid, "Yay! I will now call you ${params}!");
+        messenger.sendText(sender_psid, `Yay! I will now call you ${params}!`);
     })
     .catch((err) => {
         console.log(err);
