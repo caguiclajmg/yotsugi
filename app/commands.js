@@ -5,7 +5,7 @@ function loadModule(path) {
           commands = {};
 
     for(const [cmd, fn] of Object.entries(module)) {
-        console.log(`Adding command ${cmd}`);
+        console.log(`Adding command: ${cmd}`);
         commands[cmd] = fn;
     }
 
