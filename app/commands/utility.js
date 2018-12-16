@@ -131,7 +131,7 @@ const google = async (sender_psid, params) => {
 
 const duckduckgo = async (sender_psid, params) => {
     if(!params || !/\S/.test(params)) {
-        await messenger.sendText("Enter  your search terms. (Example: !duckduckgo Nisio Isin)");
+        await messenger.sendText(sender_psid, "Enter  your search terms. (Example: !duckduckgo Nisio Isin)");
         return;
     }
 
