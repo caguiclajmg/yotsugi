@@ -129,6 +129,34 @@ const google = async (sender_psid, params) => {
     }
 };
 
+const duckduckgo = async (sender_psid, params) => {
+    if(!params || !/\S/.test(params)) {
+        await messenger.sendText("Enter  your search terms. (Example: !duckduckgo Nisio Isin)");
+        return;
+    }
+
+    try {
+        await messenger.sendTypingIndicator(sender_psid, true);
+
+        const result = await rp({
+            uri: "https://api.duckduckgo.com/",
+            json: true,
+            qs: {
+                q: encodeURIComponent(params),
+                format: "json",
+                t: "yotsugi"
+            }
+        });
+
+        await messenger.sendText(sender_psid, `${result.AbstractSource}\n${result.Abstract}`);
+    } catch(err) {
+        await messenger.sendText(sender_psid, "No results found.");
+    } finally {
+        await messenger.sendTypingIndicator(sender_psid, false);
+    }
+};
+
+
 const help = async(sender_psid, params) => {
     if(!params || !/\S/.test(params)) {
         await messenger.sendText(sender_psid, "Enter the name of the command you need help with. (Example: !help callme)");
@@ -156,5 +184,6 @@ module.exports = {
     weather,
     callme,
     google,
+    duckduckgo,
     help
 };
