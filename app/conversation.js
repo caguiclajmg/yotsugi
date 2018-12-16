@@ -15,7 +15,8 @@ const handleMessage = async (sender_psid, message) => {
     const response = await textRequest(agent, message, {
         sessionId: sender_psid
     });
-    console.log(response);
+
+    await messenger.sendText(sender_psid, response.result.fulfillment.speech);
 };
 
 module.exports = {
