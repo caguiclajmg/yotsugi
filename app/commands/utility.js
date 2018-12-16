@@ -150,7 +150,6 @@ const duckduckgo = async (sender_psid, params) => {
 
         await messenger.sendText(sender_psid, `${result.AbstractSource}\n${result.AbstractText}`);
     } catch(err) {
-        console.log(err);
         await messenger.sendText(sender_psid, "No results found.");
     } finally {
         await messenger.sendTypingIndicator(sender_psid, false);
@@ -185,6 +184,5 @@ module.exports = {
     weather,
     callme,
     google,
-    duckduckgo,
     help
 };
