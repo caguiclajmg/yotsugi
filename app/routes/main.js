@@ -7,6 +7,8 @@ const express = require("express"),
       conversation = require("../conversation"),
       router = express.Router();
 
+router.get("/", (req, res) => { res.redirect(301, "https://m.me/YotsugiBot"); });
+
 router.get("/webhook", (req, res) => {
     const mode = req.query["hub.mode"],
           token = req.query["hub.verify_token"],
