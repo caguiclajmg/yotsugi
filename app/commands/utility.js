@@ -94,9 +94,31 @@ const callme = async (sender_psid, params) => {
     }
 };
 
+const help = async(sender_psid, params) => {
+    if(!params || !/\S/.test(params)) {
+        await messenger.sendText(sender_psid, "Enter the name of the command you need help with. (Example: !help callme)");
+        return;
+    }
+
+    await messenger.sendText(sender_psid, "Command documentation is not available at the moment. Please visit the page for the full list of commands and their usage.");
+    await messenger.sendTemplate(sender_psid, [
+        {
+            title: "Yotsugi",
+            image_url: "https://s3-us-west-2.amazonaws.com/yotsugi.caguicla.me/logo.png",
+            subtitle: "A multi-purpose Messenger bot.",
+            default_action: {
+                type: "web_url",
+                url: "https://www.facebook.com/YotsugiBot/",
+                webview_height_ratio: "tall"
+            }
+        }
+    ]);
+};
+
 module.exports = {
     translate,
     wikipedia,
     weather,
-    callme
+    callme,
+    help
 };

@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/caguiclajmg/yotsugi#readme",
   "dependencies": {
+    "apiai": "^4.0.3",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "html2plaintext": "^2.1.0",

@@ -4,6 +4,7 @@ const express = require("express"),
       commands = require("../commands"),
       config = require("../../config"),
       messenger = require("../messenger"),
+      conversation = require("../conversation"),
       router = express.Router();
 
 router.get("/webhook", (req, res) => {
@@ -37,7 +38,7 @@ router.post("/webhook", (req, res) => {
               sender_psid = webhook_event.sender.id;
 
         if(webhook_event.message) {
-            handleMessage(sender_psid, webhook_event.message).catch((err) => {});
+            handleMessage(sender_psid, webhook_event.message).catch((err) => { console.log(err); });
         } else if(webhook_event.postback) {
             handlePostback(sender_psid, webhook_event.postback);
         } else {
@@ -51,23 +52,20 @@ router.post("/webhook", (req, res) => {
 async function handleMessage(sender_psid, received_message) {
     let message = received_message.text;
 
-    if(!message || !message.startsWith(config.COMMAND_PREFIX)) {
-        messenger.sendText(sender_psid, "イェーイ、ピースピース！\n\nPlease check the page for the list of available commands.");
-        messenger.sendTemplate(sender_psid, [
-            {
-                title: "Yotsugi",
-                image_url: "https://s3-us-west-2.amazonaws.com/yotsugi.caguicla.me/logo.png",
-                subtitle: "A multi-purpose Messenger bot",
-                default_action: {
-                    type: "web_url",
-                    url: "https://www.facebook.com/YotsugiBot/",
-                    webview_height_ratio: "tall"
-                }
-            }
-        ]);
-        return;
-    }
+    if(!message) return;
 
+    if(message.startsWith(config.COMMAND_PREFIX)) {
+        await handleCommand(sender_psid, message);
+    } else {
+        await handleConversation(sender_psid, message);
+    }
+}
+
+async function handleConversation(sender_psid, message) {
+    await conversation.handleMessage(sender_psid, message);
+}
+
+async function handleCommand(sender_psid, message) {
     message = message.slice(config.COMMAND_PREFIX.length);
 
     let [command, ...params] = message.split(" ");
@@ -77,7 +75,7 @@ async function handleMessage(sender_psid, received_message) {
     if(commands.hasOwnProperty(command)) {
         commands[command](sender_psid, params);
     } else {
-        messenger.sendText(sender_psid, `Unrecognized command ${command}!`);
+        await messenger.sendText(sender_psid, `Unrecognized command ${command}!`);
     }
 }
 
