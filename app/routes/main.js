@@ -61,7 +61,7 @@ async function handleMessage(sender_psid, received_message) {
 }
 
 async function handleConversation(sender_psid, message) {
-    await messenger.sendText("Yay~ Peace, Peace!\n\nEnter !help for general usage help.");
+    await messenger.sendText(sender_psid, "Yay~ Peace, Peace!\n\nEnter !help for general usage help.");
 }
 
 async function handleCommand(sender_psid, message) {
