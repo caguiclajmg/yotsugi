@@ -37,7 +37,7 @@ router.post("/webhook", (req, res) => {
               sender_psid = webhook_event.sender.id;
 
         if(webhook_event.message) {
-            handleMessage(sender_psid, webhook_event.message).catch((err) => {});
+            handleMessage(sender_psid, webhook_event.message).catch((err) => { console.log(err); });
         } else if(webhook_event.postback) {
             handlePostback(sender_psid, webhook_event.postback);
         } else {
