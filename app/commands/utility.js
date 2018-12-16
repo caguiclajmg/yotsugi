@@ -138,18 +138,19 @@ const duckduckgo = async (sender_psid, params) => {
     try {
         await messenger.sendTypingIndicator(sender_psid, true);
 
-        const result = await rp({
+        const result = await rp.get({
             uri: "https://api.duckduckgo.com/",
             json: true,
             qs: {
-                q: encodeURIComponent(params),
+                q: params,
                 format: "json",
                 t: "yotsugi"
             }
         });
 
-        await messenger.sendText(sender_psid, `${result.AbstractSource}\n${result.Abstract}`);
+        await messenger.sendText(sender_psid, `${result.AbstractSource}\n${result.AbstractText}`);
     } catch(err) {
+        console.log(err);
         await messenger.sendText(sender_psid, "No results found.");
     } finally {
         await messenger.sendTypingIndicator(sender_psid, false);
