@@ -116,7 +116,7 @@ const google = async (sender_psid, params) => {
 
         console.log(results);
 
-        for(const result in results.items) {
+        for(const result in results["items"]) {
             if(!result.kind === "customsearch#result") continue;
 
             const text = `${result.title}\n${result.snippet}`;
