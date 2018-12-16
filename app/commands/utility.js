@@ -96,7 +96,6 @@ const callme = async (sender_psid, params) => {
 
 const help = async(sender_psid, params) => {
     if(!params || !/\S/.test(params)) {
-        await messenger.sendText(sender_psid, "Yay~ Peace, Peace!");
         await messenger.sendText(sender_psid, "Enter the name of the command you need help with. (Example: !help callme)");
         return;
     }
