@@ -17,5 +17,8 @@ module.exports = {
 
     "OPENWEATHERMAP_KEY": process.env.OPENWEATHERMAP_KEY,
 
-    "DIALOGFLOW_TOKEN": process.env.DIALOGFLOW_TOKEN
+    "DIALOGFLOW_TOKEN": process.env.DIALOGFLOW_TOKEN,
+
+    "GOOGLE_CX": process.env.GOOGLE_CX,
+    "GOOGLE_KEY": process.env.GOOGLE_KEY
 };
