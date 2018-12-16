@@ -4,6 +4,7 @@ const express = require("express"),
       commands = require("../commands"),
       config = require("../../config"),
       messenger = require("../messenger"),
+      conversation = require("../conversation"),
       router = express.Router();
 
 router.get("/webhook", (req, res) => {
@@ -61,7 +62,7 @@ async function handleMessage(sender_psid, received_message) {
 }
 
 async function handleConversation(sender_psid, message) {
-    await messenger.sendText(sender_psid, "Yay~ Peace, Peace!\n\nEnter !help for general usage help.");
+    await conversation.handleMessage(sender_psid, message);
 }
 
 async function handleCommand(sender_psid, message) {
