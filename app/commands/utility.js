@@ -95,7 +95,12 @@ const callme = async (sender_psid, params) => {
     }
 };
 
-const google = async (sender_id, params) => {
+const google = async (sender_psid, params) => {
+    if(!params || !/\S/.test(params)) {
+        await messenger.sendText(sender_psid, "Enter your search terms. (Example: !google Nisio Isin)");
+        return;
+    }
+
     try {
         await messenger.sendTypingIndicator(sender_psid, true);
 
