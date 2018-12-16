@@ -72,6 +72,7 @@ const weather = async (sender_psid, params) => {
 
     try {
         await messenger.sendTypingIndicator(sender_psid, true);
+
         const weather = await rp.get({
             uri: `https://api.openweathermap.org/data/2.5/weather?zip=${params}&appid=${config.OPENWEATHERMAP_KEY}`,
             json: true
@@ -91,6 +92,34 @@ const callme = async (sender_psid, params) => {
         await messenger.sendText(sender_psid, params ? `I will now call you ${params}!` : "You removed your nickname.");
     } catch(err) {
         await messenger.sendText(sender_psid, "I'm currently unable to set your nickname, please try again later.");
+    }
+};
+
+const google = async (sender_id, params) => {
+    try {
+        await messenger.sendTypingIndicator(sender_psid, true);
+
+        const results = await rp.get({
+            uri: "https://www.googleapis.com/customsearch/v1",
+            json: true,
+            qs: {
+                cx: config.GOOGLE_CX,
+                key: config.GOOGLE_KEY,
+                q: params
+            }
+        });
+
+        for(const result in results.items) {
+            if(!result.kind === "customsearch#result") continue;
+
+            const text = `${result.title}\n${result.snippet}`;
+
+            await messenger.sendText(sender_psid, text);
+        }
+    } catch(err) {
+        await messenger.sendText(sender_psid, "No results found.");
+    } finally {
+        await messenger.sendTypingIndicator(sender_psid, false);
     }
 };
 
