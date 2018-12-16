@@ -100,7 +100,7 @@ const help = async(sender_psid, params) => {
         return;
     }
 
-    await messenger.sendText("Yay! Command documentation is not available at the moment. Please visit the page for the full list of commands and their usage.");
+    await messenger.sendText("Command documentation is not available at the moment. Please visit the page for the full list of commands and their usage.");
     await messenger.sendTemplate(sender_psid, [
         {
             title: "Yotsugi",
