@@ -51,23 +51,20 @@ router.post("/webhook", (req, res) => {
 async function handleMessage(sender_psid, received_message) {
     let message = received_message.text;
 
-    if(!message || !message.startsWith(config.COMMAND_PREFIX)) {
-        messenger.sendText(sender_psid, "イェーイ、ピースピース！\n\nPlease check the page for the list of available commands.");
-        messenger.sendTemplate(sender_psid, [
-            {
-                title: "Yotsugi",
-                image_url: "https://s3-us-west-2.amazonaws.com/yotsugi.caguicla.me/logo.png",
-                subtitle: "A multi-purpose Messenger bot",
-                default_action: {
-                    type: "web_url",
-                    url: "https://www.facebook.com/YotsugiBot/",
-                    webview_height_ratio: "tall"
-                }
-            }
-        ]);
-        return;
-    }
+    if(!message) return;
 
+    if(message.startsWith(config.COMMAND_PREFIX)) {
+        await handleCommand(sender_psid, message);
+    } else {
+        await handleConversation(sender_psid, message);
+    }
+}
+
+async function handleConversation(sender_psid, message) {
+    await messenger.sendText("Yay~ Peace, Peace!\n\nEnter !help for general usage help.");
+}
+
+async function handleCommand(sender_psid, message) {
     message = message.slice(config.COMMAND_PREFIX.length);
 
     let [command, ...params] = message.split(" ");
@@ -77,7 +74,7 @@ async function handleMessage(sender_psid, received_message) {
     if(commands.hasOwnProperty(command)) {
         commands[command](sender_psid, params);
     } else {
-        messenger.sendText(sender_psid, `Unrecognized command ${command}!`);
+        await messenger.sendText(sender_psid, `Unrecognized command ${command}!`);
     }
 }
 
