@@ -104,7 +104,7 @@ const google = async (sender_psid, params) => {
     try {
         await messenger.sendTypingIndicator(sender_psid, true);
 
-        const results = await rp.get({
+        const options = {
             uri: "https://www.googleapis.com/customsearch/v1",
             json: true,
             qs: {
@@ -112,16 +112,15 @@ const google = async (sender_psid, params) => {
                 key: config.GOOGLE_KEY,
                 q: params
             }
-        });
+        };
 
-        console.log(results);
+        const result = await rp.get(options),
+              items = result["items"];
 
-        for(const result in results["items"]) {
-            if(!result.kind === "customsearch#result") continue;
+        for(let i = 0; i < items.length; ++i) {
+            if(items[i].kind === "customsearch#result") continue;
 
-            const text = `${result.title}\n${result.snippet}`;
-
-            await messenger.sendText(sender_psid, text);
+            await messenger.sendText(sender_psid, `${items[i].title}\n${items[i].snippet}`);
         }
     } catch(err) {
         await messenger.sendText(sender_psid, "No results found.");
