@@ -118,7 +118,7 @@ const google = async (sender_psid, params) => {
               items = result["items"];
 
         for(let i = 0; i < items.length; ++i) {
-            if(items[i].kind === "customsearch#result") continue;
+            if(items[i].kind !== "customsearch#result") continue;
 
             await messenger.sendText(sender_psid, `${items[i].title}\n${items[i].snippet}`);
         }
