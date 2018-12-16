@@ -72,6 +72,7 @@ const weather = async (sender_psid, params) => {
 
     try {
         await messenger.sendTypingIndicator(sender_psid, true);
+
         const weather = await rp.get({
             uri: `https://api.openweathermap.org/data/2.5/weather?zip=${params}&appid=${config.OPENWEATHERMAP_KEY}`,
             json: true
@@ -91,6 +92,40 @@ const callme = async (sender_psid, params) => {
         await messenger.sendText(sender_psid, params ? `I will now call you ${params}!` : "You removed your nickname.");
     } catch(err) {
         await messenger.sendText(sender_psid, "I'm currently unable to set your nickname, please try again later.");
+    }
+};
+
+const google = async (sender_psid, params) => {
+    if(!params || !/\S/.test(params)) {
+        await messenger.sendText(sender_psid, "Enter your search terms. (Example: !google Nisio Isin)");
+        return;
+    }
+
+    try {
+        await messenger.sendTypingIndicator(sender_psid, true);
+
+        const options = {
+            uri: "https://www.googleapis.com/customsearch/v1",
+            json: true,
+            qs: {
+                cx: config.GOOGLE_CX,
+                key: config.GOOGLE_KEY,
+                q: params
+            }
+        };
+
+        const result = await rp.get(options),
+              items = result["items"];
+
+        for(let i = 0; i < items.length; ++i) {
+            if(items[i].kind !== "customsearch#result") continue;
+
+            await messenger.sendText(sender_psid, `${items[i].title}\n${items[i].snippet}`);
+        }
+    } catch(err) {
+        await messenger.sendText(sender_psid, "No results found.");
+    } finally {
+        await messenger.sendTypingIndicator(sender_psid, false);
     }
 };
 
@@ -120,5 +155,6 @@ module.exports = {
     wikipedia,
     weather,
     callme,
+    google,
     help
 };
