@@ -6,7 +6,9 @@ const rp = require("request-promise"),
       config = require("../../config"),
       messenger = require("../messenger"),
       database = require("../database"),
-      WaniKani = require("../helpers/wanikani");
+      WaniKani = require("../helpers/wanikani"),
+      Facebook = require("../helpers/facebook"),
+      send = new Facebook.Send(config.APP_PAGE_TOKEN);
 
 const translate = async (sender_psid, params) => {
     let [lang, ...text] = params.split(" ");
@@ -114,9 +116,9 @@ const weather = async (sender_psid, params) => {
 const callme = async (sender_psid, params) => {
     try {
         await database.setNickname(sender_psid, params);
-        await messenger.sendText(sender_psid, params ? `I will now call you ${params}!` : "You removed your nickname.");
+        await send.sendText(sender_psid, params ? `I will now call you ${params}!` : "You removed your nickname.");
     } catch(err) {
-        await messenger.sendText(sender_psid, "I'm currently unable to set your nickname, please try again later.");
+        await send.sendText(sender_psid, "I'm currently unable to set your nickname, please try again later.");
     }
 };
 
