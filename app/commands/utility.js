@@ -185,7 +185,10 @@ const wanikani = async (sender_psid, params) => {
                 Authorization: api_key
             }
         });
+
+        await messenger.sendText(sender_psid, `${response.data.username}\nLevel: ${response.data.level}`);
     } catch(err) {
+        await messenger.sendText(sender_psid, "Unable to get user data from WaniKani.");
     } finally {
         await messenger.sendTypingIndicator(sender_psid, false);
     }
