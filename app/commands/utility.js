@@ -185,7 +185,7 @@ const wanikani = async (sender_psid, params) => {
             }
         });
 
-        await messenger.sendText(sender_psid, `${response.data.username}\nLevel: ${response.data.level}\nStarted at: ${response.data.started_at}`);
+        await messenger.sendText(sender_psid, `${response.data.username}\nLevel: ${response.data.level}\nStarted at: ${Date.parse(response.data.started_at).toLocaleDateString("en-US")}`);
     } catch(err) {
         await messenger.sendText(sender_psid, "Unable to get user data from WaniKani.");
     } finally {
