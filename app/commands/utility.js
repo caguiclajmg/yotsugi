@@ -5,7 +5,8 @@ const rp = require("request-promise"),
       moment = require("moment"),
       config = require("../../config"),
       messenger = require("../messenger"),
-      database = require("../database");
+      database = require("../database"),
+      WaniKani = require("../helpers/wanikani");
 
 const translate = async (sender_psid, params) => {
     let [lang, ...text] = params.split(" ");
@@ -201,13 +202,8 @@ const wanikani = async (sender_psid, params) => {
     try {
         await messenger.sendTypingIndicator(sender_psid, true);
 
-        const response = await rp.get({
-            uri: "https://api.wanikani.com/v2/user",
-            json: true,
-            headers: {
-                Authorization: `Bearer ${api_key}`
-            }
-        });
+        const wanikani = WaniKani(api_key),
+              response = await wanikani.user();
 
         await messenger.sendText(sender_psid, `${response.data.username}\nLevel: ${response.data.level}\nStarted at: ${moment(response.data.started_at).format("d MMMM YYYY")}`);
     } catch(err) {
