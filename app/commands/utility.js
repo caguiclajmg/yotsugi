@@ -182,7 +182,7 @@ const wanikani = async (sender_psid, params) => {
             uri: "https://api.wanikani.com/v2/user",
             json: true,
             headers: {
-                Authorization: api_key
+                Authorization: `Bearer ${api_key}`
             }
         });
 
