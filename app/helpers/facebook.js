@@ -23,15 +23,16 @@ class Send {
     }
 
     async sendText(psid, text) {
-        const responses = [];
+        const chunks = text.match(/.{1,2000}/gs),
+              responses = [];
 
-        text.match(/.{1,2000}/gs).forEach(async chunk => {
+        for(let i = 0; i < chunks.length; ++i) {
             responses.push(await this.send(psid, {
                 message: {
                     text: chunk
                 }
             }));
-        });
+        }
 
         return responses;
     }
