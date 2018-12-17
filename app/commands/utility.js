@@ -2,6 +2,7 @@
 
 const rp = require("request-promise"),
       h2p = require("html2plaintext"),
+      moment = require("moment"),
       config = require("../../config"),
       messenger = require("../messenger"),
       database = require("../database");
@@ -129,6 +130,70 @@ const google = async (sender_psid, params) => {
     }
 };
 
+const duckduckgo = async (sender_psid, params) => {
+    if(!params || !/\S/.test(params)) {
+        await messenger.sendText(sender_psid, "Enter  your search terms. (Example: !duckduckgo Nisio Isin)");
+        return;
+    }
+
+    try {
+        await messenger.sendTypingIndicator(sender_psid, true);
+
+        const result = await rp.get({
+            uri: "https://api.duckduckgo.com/",
+            json: true,
+            qs: {
+                q: params,
+                format: "json",
+                t: "yotsugi"
+            }
+        });
+
+        await messenger.sendText(sender_psid, `${result.AbstractSource}\n${result.AbstractText}`);
+    } catch(err) {
+        await messenger.sendText(sender_psid, "No results found.");
+    } finally {
+        await messenger.sendTypingIndicator(sender_psid, false);
+    }
+};
+
+const wanikani = async (sender_psid, params) => {
+    if(params) {
+        if(/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/.test(params)) {
+            await database.setWaniKaniKey(sender_psid, params);
+            await messenger.sendText(sender_psid, "Successfully set WaniKani API key.");
+            return;
+        } else {
+            await messenger.sendText(sender_psid, "Invalid WaniKani API key.");
+            return;
+        }
+    }
+
+    const api_key = await database.getWaniKaniKey(sender_psid);
+    if(!api_key) {
+        await messenger.sendText(sender_psid, "WaniKani API key not found, please set an API Key first using !wanikani <api_key>.");
+        return;
+    }
+
+    try {
+        await messenger.sendTypingIndicator(sender_psid, true);
+
+        const response = await rp.get({
+            uri: "https://api.wanikani.com/v2/user",
+            json: true,
+            headers: {
+                Authorization: `Bearer ${api_key}`
+            }
+        });
+
+        await messenger.sendText(sender_psid, `${response.data.username}\nLevel: ${response.data.level}\nStarted at: ${moment(response.data.started_at).format("d MMMM YYYY")}`);
+    } catch(err) {
+        await messenger.sendText(sender_psid, "Unable to get user data from WaniKani.");
+    } finally {
+        await messenger.sendTypingIndicator(sender_psid, false);
+    }
+};
+
 const help = async(sender_psid, params) => {
     if(!params || !/\S/.test(params)) {
         await messenger.sendText(sender_psid, "Enter the name of the command you need help with. (Example: !help callme)");
@@ -156,5 +221,6 @@ module.exports = {
     weather,
     callme,
     google,
+    wanikani,
     help
 };
