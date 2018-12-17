@@ -157,16 +157,15 @@ const duckduckgo = async (sender_psid, params) => {
 };
 
 const wanikani = async (sender_psid, params) => {
-    if(params && /\S/.test(params)) {
-        try {
+    if(params) {
+        if(/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/.test(params)) {
             await database.setWaniKaniKey(sender_psid, params);
             await messenger.sendText(sender_psid, "Successfully set WaniKani API key.");
-        } catch(err) {
-            console.log(err);
-            await messenger.sendText(sender_psid, "Unable to set WaniKani API key.");
+            return;
+        } else {
+            await messenger.sendText(sender_psid, "Invalid WaniKani API key.");
+            return;
         }
-
-        return;
     }
 
     const api_key = await database.getWaniKaniKey(sender_psid);
