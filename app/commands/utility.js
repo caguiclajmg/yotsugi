@@ -20,8 +20,13 @@ const translate = async (sender_psid, params) => {
         await messenger.sendTypingIndicator(sender_psid, true);
 
         const translation = await rp.get({
-            uri: `https://translate.yandex.net/api/v1.5/tr.json/translate?key=${config.YANDEX_TRANSLATE_KEY}&text=${encodeURIComponent(text)}&lang=${lang}`,
-            json: true
+            uri: "https://translate.yandex.net/api/v1.5/tr.json/translate",
+            json: true,
+            qs: {
+                key: config.YANDEX_TRANSLATE_KEY,
+                text: text,
+                lang: lang
+            }
         });
 
         await messenger.sendText(sender_psid, `${translation.text[0]}\n\nPowered by Yandex.Translate`);
@@ -42,8 +47,15 @@ const wikipedia = async (sender_psid, params) => {
         await messenger.sendTypingIndicator(sender_psid, true);
 
         const articles = await rp.get({
-            uri: `https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&utf8=1&srsearch=${encodeURIComponent(params)}`,
-            json: true
+            uri: "https://en.wikipedia.org/w/api.php",
+            json: true,
+            qs: {
+                action: "query",
+                format: "json",
+                list: "search",
+                utf8: 1,
+                srsearch: params
+            }
         });
 
         if(articles.query.search.length === 0) {
@@ -52,8 +64,14 @@ const wikipedia = async (sender_psid, params) => {
         }
 
         const article = await rp.get({
-            uri: `https://en.wikipedia.org/w/api.php?action=parse&format=json&prop=text&page=${articles.query.search[0].title}`,
-            json: true
+            uri: "https://en.wikipedia.org/w/api.php",
+            json: true,
+            qa: {
+                action: "parse",
+                format: "json",
+                prop: "text",
+                page: articles.query.search[0].title
+            }
         });
 
         const text = h2p(article.parse.text["*"]);
@@ -75,8 +93,12 @@ const weather = async (sender_psid, params) => {
         await messenger.sendTypingIndicator(sender_psid, true);
 
         const weather = await rp.get({
-            uri: `https://api.openweathermap.org/data/2.5/weather?zip=${params}&appid=${config.OPENWEATHERMAP_KEY}`,
-            json: true
+            uri: `https://api.openweathermap.org/data/2.5/weather`,
+            json: true,
+            qs: {
+                zip: params,
+                appid: config.OPENWEATHERMAP_KEY
+            }
         });
 
         await messenger.sendText(sender_psid, `${weather.name} Weather\nType: ${weather.weather[0].main} (${weather.weather[0].description})\nTemperature: ${weather.main.temp - 273.15}C`);
