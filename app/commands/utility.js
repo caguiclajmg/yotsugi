@@ -118,6 +118,7 @@ const callme = async (sender_psid, params) => {
         await database.setNickname(sender_psid, params);
         await send.sendText(sender_psid, params ? `I will now call you ${params}!` : "You removed your nickname.");
     } catch(err) {
+        console.log(err);
         await send.sendText(sender_psid, "I'm currently unable to set your nickname, please try again later.");
     }
 };
