@@ -39,5 +39,7 @@ const setWaniKaniKey = async(sender_psid, key) => {
 
 module.exports = {
     getNickname,
-    setNickname
+    setNickname,
+    getWaniKaniKey,
+    setWaniKaniKey
 };
