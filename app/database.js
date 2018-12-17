@@ -21,6 +21,22 @@ const setNickname = async(sender_psid, nickname) => {
     });
 };
 
+const getWaniKaniKey = async(sender_psid) => {
+    return await db.oneOrNone("SELECT api_key FROM wanikani WHERE consumer = ${psid}", { psid: sender_psid }, row => row.api_key);
+};
+
+const setWaniKaniKey = async(sender_psid, key) => {
+    if(!key || !/\S/.test(key)) {
+        await db.any("DELETE FROM wanikani WHERE consumer = ${psid}", { psid: sender_psid });
+        return;
+    }
+
+    await db.any("INSERT INTO wanikani (consumer, api_key) VALUES (${psid}, ${key}) ON CONFLICT (consumer) DO UPDATE SET api_key = ${key}", {
+        psid: sender_psid,
+        key: key
+    });
+};
+
 module.exports = {
     getNickname,
     setNickname

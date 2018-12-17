@@ -156,6 +156,40 @@ const duckduckgo = async (sender_psid, params) => {
     }
 };
 
+const wanikani = async (sender_psid, params) => {
+    if(params && /\S/.test(params)) {
+        try {
+            await database.setWaniKaniKey(sender_psid, params);
+            await messenger.sendText(sender_psid, "Successfully set WaniKani API key.");
+        } catch(err) {
+            console.log(err);
+            await messenger.sendText(sender_psid, "Unable to set WaniKani API key.");
+        }
+
+        return;
+    }
+
+    const api_key = await database.getWaniKaniKey(sender_psid);
+    if(!api_key) {
+        await messenger.sendText(sender_psid, "WaniKani API key not found, please set an API Key first using !wanikani <api_key>.");
+        return;
+    }
+
+    try {
+        await messenger.sendTypingIndicator(sender_psid, true);
+
+        const response = await rp.get({
+            uri: "https://api.wanikani.com/v2/user",
+            json: true,
+            headers: {
+                Authorization: api_key
+            }
+        });
+    } catch(err) {
+    } finally {
+        await messenger.sendTypingIndicator(sender_psid, false);
+    }
+};
 
 const help = async(sender_psid, params) => {
     if(!params || !/\S/.test(params)) {
@@ -184,5 +218,6 @@ module.exports = {
     weather,
     callme,
     google,
+    wanikani,
     help
 };
