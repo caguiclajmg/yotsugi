@@ -2,6 +2,7 @@
 
 const rp = require("request-promise"),
       h2p = require("html2plaintext"),
+      moment = require("moment"),
       config = require("../../config"),
       messenger = require("../messenger"),
       database = require("../database");
@@ -185,7 +186,7 @@ const wanikani = async (sender_psid, params) => {
             }
         });
 
-        await messenger.sendText(sender_psid, `${response.data.username}\nLevel: ${response.data.level}\nStarted at: ${Date.parse(response.data.started_at).toLocaleDateString("en-US")}`);
+        await messenger.sendText(sender_psid, `${response.data.username}\nLevel: ${response.data.level}\nStarted at: ${moment(response.data.started_at).format("d MMMM YYYY")}`);
     } catch(err) {
         await messenger.sendText(sender_psid, "Unable to get user data from WaniKani.");
     } finally {
