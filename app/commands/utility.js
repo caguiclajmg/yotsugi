@@ -66,7 +66,7 @@ const wikipedia = async (sender_psid, params) => {
         const article = await rp.get({
             uri: "https://en.wikipedia.org/w/api.php",
             json: true,
-            qa: {
+            qs: {
                 action: "parse",
                 format: "json",
                 prop: "text",
