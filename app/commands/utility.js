@@ -77,6 +77,7 @@ const wikipedia = async (sender_psid, params) => {
         const text = h2p(article.parse.text["*"]);
         await messenger.sendText(sender_psid, text);
     } catch(err) {
+        console.log(err);
         await messenger.sendText(sender_psid, "Unable to get article from Wikipedia, please try again later.");
     } finally {
         await messenger.sendTypingIndicator(sender_psid, false);
