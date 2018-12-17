@@ -36,8 +36,48 @@ class Send {
 
         return responses;
     }
+
+    async sendAttachment(psid, type, attachment) {
+        return await this.send(psid, {
+            message: {
+                attachment: {
+                    type: type,
+                    payload: attachment
+                }
+            }
+        });
+    }
+
+    async sendAttachmentFromURL(psid, type, url, reusable = false) {
+        return await this.sendAttachment(psid, type, {
+            url: url,
+            is_reusable: reusable
+        });
+    }
+
+    async sendTemplate(psid, elements) {
+        return await this.sendAttachment(psid, "template", {
+            template_type: "generic",
+            elements: elements
+        });
+    }
+
+    async sendSenderAction(psid, sender_action) {
+        return await this.sendResponse(psid, {
+            sender_action: sender_action
+        });
+    }
+
+    async sendTypingIndicator(psid, state) {
+        return await this.sendSenderAction(psid, state ? "typing_on" : "typing_off");
+    }
+
+    async sendSeenIndicator(psid, state) {
+        return await this.sendSenderAction(psid, "mark_seen");
+    }
 };
 
 module.exports = exports = {
+    UserProfile,
     Send
 }
