@@ -22,7 +22,7 @@ const setNickname = async(sender_psid, nickname) => {
 };
 
 const getWaniKaniKey = async(sender_psid) => {
-    return await db.oneOrNone("SELECT api_key FROM wanikani WHERE consumer = ${psid}", { psid: sender_psid }, row => row.api_key);
+    return await db.oneOrNone("SELECT api_key FROM wanikani WHERE consumer = ${psid}", { psid: sender_psid }, row => row ? row.api_key : null);
 };
 
 const setWaniKaniKey = async(sender_psid, key) => {
