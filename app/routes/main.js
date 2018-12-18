@@ -1,18 +1,18 @@
 "use strict";
 
 const express = require("express"),
-      commands = require("../commands"),
-      config = require("../../config"),
-      messenger = require("../messenger"),
-      conversation = require("../conversation"),
-      router = express.Router();
+    commands = require("../commands"),
+    config = require("../../config"),
+    messenger = require("../messenger"),
+    conversation = require("../conversation"),
+    router = express.Router();
 
 router.get("/", (req, res) => { res.redirect(301, "https://m.me/YotsugiBot"); });
 
 router.get("/webhook", (req, res) => {
     const mode = req.query["hub.mode"],
-          token = req.query["hub.verify_token"],
-          challenge = req.query["hub.challenge"];
+        token = req.query["hub.verify_token"],
+        challenge = req.query["hub.challenge"];
 
     if(!mode || mode !== "subscribe") {
         res.sendStatus(500);
@@ -37,7 +37,7 @@ router.post("/webhook", (req, res) => {
 
     body.entry.forEach((entry) => {
         const webhook_event = entry.messaging[0],
-              sender_psid = webhook_event.sender.id;
+            sender_psid = webhook_event.sender.id;
 
         if(webhook_event.message) {
             handleMessage(sender_psid, webhook_event.message).catch((err) => { console.log(err); });

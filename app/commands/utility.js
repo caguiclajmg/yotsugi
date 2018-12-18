@@ -1,14 +1,14 @@
 "use strict";
 
 const rp = require("request-promise"),
-      h2p = require("html2plaintext"),
-      moment = require("moment"),
-      config = require("../../config"),
-      messenger = require("../messenger"),
-      database = require("../database"),
-      WaniKani = require("../helpers/wanikani"),
-      Facebook = require("../helpers/facebook"),
-      send = new Facebook.Send(config.APP_PAGE_TOKEN);
+    h2p = require("html2plaintext"),
+    moment = require("moment"),
+    config = require("../../config"),
+    messenger = require("../messenger"),
+    database = require("../database"),
+    WaniKani = require("../helpers/wanikani"),
+    Facebook = require("../helpers/facebook"),
+    send = new Facebook.Send(config.APP_PAGE_TOKEN);
 
 const translate = async (sender_psid, params) => {
     let [lang, ...text] = params.split(" ");
@@ -63,7 +63,7 @@ const wikipedia = async (sender_psid, params) => {
 
         if(articles.query.search.length === 0) {
             await messenger.sendText(sender_psid, "No articles with specified title found.");
-            return
+            return;
         }
 
         const article = await rp.get({
@@ -97,7 +97,7 @@ const weather = async (sender_psid, params) => {
         await messenger.sendTypingIndicator(sender_psid, true);
 
         const weather = await rp.get({
-            uri: `https://api.openweathermap.org/data/2.5/weather`,
+            uri: "https://api.openweathermap.org/data/2.5/weather",
             json: true,
             qs: {
                 zip: params,
@@ -143,7 +143,7 @@ const google = async (sender_psid, params) => {
         };
 
         const result = await rp.get(options),
-              items = result["items"];
+            items = result["items"];
 
         for(let i = 0; i < items.length; ++i) {
             if(items[i].kind !== "customsearch#result") continue;
@@ -206,7 +206,7 @@ const wanikani = async (sender_psid, params) => {
         await messenger.sendTypingIndicator(sender_psid, true);
 
         const wanikani = WaniKani(api_key),
-              response = await wanikani.user();
+            response = await wanikani.user();
 
         await messenger.sendText(sender_psid, `${response.data.username}\nLevel: ${response.data.level}\nStarted at: ${moment(response.data.started_at).format("d MMMM YYYY")}`);
     } catch(err) {

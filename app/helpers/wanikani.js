@@ -1,12 +1,12 @@
 "use strict";
 
 const moment = require("moment"),
-      rp = require("request-promise");
+    rp = require("request-promise");
 
 module.exports = exports = class WaniKani {
     constructor(api_key) {
         this.api_key = api_key;
-        this.base_uri = "https://api.wanikani.com/v2"
+        this.base_uri = "https://api.wanikani.com/v2";
     }
 
     async _call(endpoint, options) {

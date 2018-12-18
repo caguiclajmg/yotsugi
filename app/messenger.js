@@ -1,7 +1,7 @@
 "use strict";
 
 const rp = require("request-promise"),
-      config = require("../config");
+    config = require("../config");
 
 const MAX_MESSAGE_LENGTH = 2000;
 const MAX_CHUNK_COUNT = 8;

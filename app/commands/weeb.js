@@ -1,8 +1,8 @@
 "use strict";
 
 const rp = require("request-promise"),
-      messenger = require("../messenger"),
-      config = require("../../config");
+    messenger = require("../messenger"),
+    config = require("../../config");
 
 const ratewaifu = async (sender_psid, params) => {
     if(!params) {
@@ -10,13 +10,13 @@ const ratewaifu = async (sender_psid, params) => {
         return;
     }
 
-    if(params.toUpperCase() === 'Satania'.toUpperCase()) {
+    if(params.toUpperCase() === "Satania".toUpperCase()) {
         await messenger.sendText(sender_psid, "Ah, I see you're a デビル of culture as well.");
         await messenger.sendAttachmentFromURL(sender_psid, "video", "https://simg3.gelbooru.com//images/7e/30/7e30b74b172268369138ff0ed078bf9a.webm");
         return;
     }
 
-    if(params.toUpperCase() === 'Yotsugi'.toUpperCase()) {
+    if(params.toUpperCase() === "Yotsugi".toUpperCase()) {
         await messenger.sendText(sender_psid, "Yay~ Peace, Peace!");
         await messenger.sendAttachmentFromURL(sender_psid, "image", "https://simg3.gelbooru.com//images/04/ea/04eab4e28d24fe39ea79018fd29d6009.gif");
         return;
@@ -55,8 +55,8 @@ const safebooru = async (sender_psid, params) => {
         if(!results) throw new Error();
 
         const index = Math.floor(Math.random() * Math.floor(results.length)),
-              result = results[index],
-              url = `https://safebooru.org//images/${result.directory}/${result.image}`;
+            result = results[index],
+            url = `https://safebooru.org//images/${result.directory}/${result.image}`;
 
         await messenger.sendAttachmentFromURL(sender_psid, "image", url);
     } catch(err) {
@@ -98,7 +98,7 @@ const eightball = async (sender_psid, params) => {
     }
 
     const index = Math.floor(Math.random() * (EIGHTBALL_REPLIES.length + 1)),
-          reply = EIGHTBALL_REPLIES[index];
+        reply = EIGHTBALL_REPLIES[index];
 
     await messenger.sendText(sender_psid, reply);
 };

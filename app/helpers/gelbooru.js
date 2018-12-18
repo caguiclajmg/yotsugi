@@ -11,7 +11,7 @@ module.exports = exports = class Gelbooru {
     async _query(options) {
         return await rp.get({
             uri: "https://gelbooru.com/index.php",
-            json: options.json ? options.json.toString() === '1' : false,
+            json: options.json ? options.json.toString() === "1" : false,
             qs: Object.assign({}, options, {
                 page: "dapi",
                 q: "index",

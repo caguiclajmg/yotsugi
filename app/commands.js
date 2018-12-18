@@ -2,7 +2,7 @@
 
 function loadModule(path) {
     const module = require(path),
-          commands = {};
+        commands = {};
 
     for(const [cmd, fn] of Object.entries(module)) {
         console.log(`Adding command: ${cmd}`);
@@ -25,7 +25,7 @@ function loadCoreModules() {
 
 function loadUserModules() {
     const fs = require("fs"),
-          path = require("path").join(__dirname, "commands/user");
+        path = require("path").join(__dirname, "commands/user");
     let commands;
 
     if(!fs.existsSync(path)) return null;
