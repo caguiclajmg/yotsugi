@@ -1,7 +1,6 @@
 "use strict";
 
-const moment = require("moment"),
-    rp = require("request-promise");
+const rp = require("request-promise");
 
 module.exports = exports = class WaniKani {
     constructor(api_key) {
