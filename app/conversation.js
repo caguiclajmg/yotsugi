@@ -1,7 +1,7 @@
 const apiai = require("apiai"),
-      config = require("../config"),
-      messenger = require("./messenger"),
-      agent = apiai(config.DIALOGFLOW_TOKEN);
+    config = require("../config"),
+    messenger = require("./messenger"),
+    agent = apiai(config.DIALOGFLOW_TOKEN);
 
 const textRequest = async (agent, query, options) => {
     return new Promise((resolve, reject) => {

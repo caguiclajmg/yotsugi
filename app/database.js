@@ -1,7 +1,7 @@
 "use strict";
 
 const pgp = require("pg-promise")(),
-      config = require("../config");
+    config = require("../config");
 
 const db = pgp(config.DATABASE_URL);
 

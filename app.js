@@ -1,7 +1,6 @@
 "use strict";
 
-global.__base = `${__dirname}/`;
+const Yotsugi = require("./app/yotsugi"),
+    yotsugi = new Yotsugi();
 
-const app = require("./app/yotsugi");
-
-app();
+yotsugi.run();

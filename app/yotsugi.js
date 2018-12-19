@@ -1,13 +1,27 @@
 "use strict";
 
-function run() {
-    const express = require("express"),
-          config = require("../config"),
-          app = express();
+const express = require("express"),
+    bodyParser = require("body-parser"),
+    config = require("../config"),
+    { Send } = require("./helpers/facebook");
 
-    app.use(require("body-parser").json());
-    app.use(require("./routes/main"));
-    app.listen(config.PORT, () => console.log("Starting server..."));
-}
+module.exports = exports = class Yotsugi {
+    constructor() {
+        this._app = express();
+        this._app.use(bodyParser.json());
 
-module.exports = run;
+        this._app.use(require("./routes/main"));
+
+        this._app.set("context", {
+            app: this,
+            config: config,
+            send: new Send(config.APP_PAGE_TOKEN)
+        });
+    }
+
+    run() {
+        this._app.listen(config.PORT, () => {
+            console.log("Starting Yotsugi...");
+        });
+    }
+};

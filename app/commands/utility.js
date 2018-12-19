@@ -1,109 +1,133 @@
 "use strict";
 
 const rp = require("request-promise"),
-      h2p = require("html2plaintext"),
-      moment = require("moment"),
-      config = require("../../config"),
-      messenger = require("../messenger"),
-      database = require("../database");
+    h2p = require("html2plaintext"),
+    moment = require("moment"),
+    config = require("../../config"),
+    database = require("../database"),
+    WaniKani = require("../helpers/wanikani");
 
-const translate = async (sender_psid, params) => {
+const translate = async (context, sender_psid, params) => {
     let [lang, ...text] = params.split(" ");
     text = text.join(" ");
 
     if(!lang || !text) {
-        await messenger.sendText(sender_psid, "Enter the destination language and the text you want to translate. (Example: !translate en こんにちは)");
+        await context.send.sendText(sender_psid, "Enter the destination language and the text you want to translate. (Example: !translate en こんにちは)");
         return;
     }
 
     try {
-        await messenger.sendTypingIndicator(sender_psid, true);
+        await context.send.sendTypingIndicator(sender_psid, true);
 
         const translation = await rp.get({
-            uri: `https://translate.yandex.net/api/v1.5/tr.json/translate?key=${config.YANDEX_TRANSLATE_KEY}&text=${encodeURIComponent(text)}&lang=${lang}`,
-            json: true
+            uri: "https://translate.yandex.net/api/v1.5/tr.json/translate",
+            json: true,
+            qs: {
+                key: config.YANDEX_TRANSLATE_KEY,
+                text: text,
+                lang: lang
+            }
         });
 
-        await messenger.sendText(sender_psid, `${translation.text[0]}\n\nPowered by Yandex.Translate`);
+        await context.send.sendText(sender_psid, `${translation.text[0]}\n\nPowered by Yandex.Translate`);
     } catch(err) {
-        await messenger.sendText(sender_psid, "Unable to translate text, please try again later.");
+        await context.send.sendText(sender_psid, "Unable to translate text, please try again later.");
     } finally {
-        await messenger.sendTypingIndicator(sender_psid, false);
+        await context.send.sendTypingIndicator(sender_psid, false);
     }
 };
 
-const wikipedia = async (sender_psid, params) => {
+const wikipedia = async (context, sender_psid, params) => {
     if(!params || !/\S/.test(params)) {
-        await messenger.sendText(sender_psid, "Enter the name of the article to look up. (Example: !wikipedia Nisio Isin)");
+        await context.send.sendText(sender_psid, "Enter the name of the article to look up. (Example: !wikipedia Nisio Isin)");
         return;
     }
 
     try {
-        await messenger.sendTypingIndicator(sender_psid, true);
+        await context.send.sendTypingIndicator(sender_psid, true);
 
         const articles = await rp.get({
-            uri: `https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&utf8=1&srsearch=${encodeURIComponent(params)}`,
-            json: true
+            uri: "https://en.wikipedia.org/w/api.php",
+            json: true,
+            qs: {
+                action: "query",
+                format: "json",
+                list: "search",
+                utf8: 1,
+                srsearch: params
+            }
         });
 
         if(articles.query.search.length === 0) {
-            await messenger.sendText(sender_psid, "No articles with specified title found.");
-            return
+            await context.send.sendText(sender_psid, "No articles with specified title found.");
+            return;
         }
 
         const article = await rp.get({
-            uri: `https://en.wikipedia.org/w/api.php?action=parse&format=json&prop=text&page=${articles.query.search[0].title}`,
-            json: true
+            uri: "https://en.wikipedia.org/w/api.php",
+            json: true,
+            qs: {
+                action: "parse",
+                format: "json",
+                prop: "text",
+                page: articles.query.search[0].title
+            }
         });
 
         const text = h2p(article.parse.text["*"]);
-        await messenger.sendText(sender_psid, text);
+        await context.send.sendText(sender_psid, text);
     } catch(err) {
-        await messenger.sendText(sender_psid, "Unable to get article from Wikipedia, please try again later.");
+        console.log(err);
+        await context.send.sendText(sender_psid, "Unable to get article from Wikipedia, please try again later.");
     } finally {
-        await messenger.sendTypingIndicator(sender_psid, false);
+        await context.send.sendTypingIndicator(sender_psid, false);
     }
 };
 
-const weather = async (sender_psid, params) => {
+const weather = async (context, sender_psid, params) => {
     if(!/[0-9]+,[a-zA-Z]{2}$/.test(params)) {
-        await messenger.sendText(sender_psid, "Enter your ZIP code and 2-letter country code. (Example: !weather 4024,ph)");
+        await context.send.sendText(sender_psid, "Enter your ZIP code and 2-letter country code. (Example: !weather 4024,ph)");
         return;
     }
 
     try {
-        await messenger.sendTypingIndicator(sender_psid, true);
+        await context.send.sendTypingIndicator(sender_psid, true);
 
         const weather = await rp.get({
-            uri: `https://api.openweathermap.org/data/2.5/weather?zip=${params}&appid=${config.OPENWEATHERMAP_KEY}`,
-            json: true
+            uri: "https://api.openweathermap.org/data/2.5/weather",
+            json: true,
+            qs: {
+                zip: params,
+                appid: config.OPENWEATHERMAP_KEY
+            }
         });
 
-        await messenger.sendText(sender_psid, `${weather.name} Weather\nType: ${weather.weather[0].main} (${weather.weather[0].description})\nTemperature: ${weather.main.temp - 273.15}C`);
+        await context.send.sendText(sender_psid, `${weather.name} Weather\nType: ${weather.weather[0].main} (${weather.weather[0].description})\nTemperature: ${weather.main.temp - 273.15}C`);
     } catch(err) {
-        await messenger.sendText(sender_psid, "Unable to get weather data from OpenWeatherMap, please try again later.");
+        await context.send.sendText(sender_psid, "Unable to get weather data from OpenWeatherMap, please try again later.");
     } finally {
-        await messenger.sendTypingIndicator(sender_psid, false);
+        await context.send.sendTypingIndicator(sender_psid, false);
     }
 };
 
-const callme = async (sender_psid, params) => {
+const callme = async (context, sender_psid, params) => {
     try {
         await database.setNickname(sender_psid, params);
-        await messenger.sendText(sender_psid, params ? `I will now call you ${params}!` : "You removed your nickname.");
+        await context.send.sendText(sender_psid, params ? `I will now call you ${params}!` : "You removed your nickname.");
     } catch(err) {
-        await messenger.sendText(sender_psid, "I'm currently unable to set your nickname, please try again later.");
+        console.log(err);
+        await context.send.sendText(sender_psid, "I'm currently unable to set your nickname, please try again later.");
     }
 };
 
-const google = async (sender_psid, params) => {
+const google = async (context, sender_psid, params) => {
     if(!params || !/\S/.test(params)) {
-        await messenger.sendText(sender_psid, "Enter your search terms. (Example: !google Nisio Isin)");
+        await context.send.sendText(sender_psid, "Enter your search terms. (Example: !google Nisio Isin)");
         return;
     }
 
     try {
-        await messenger.sendTypingIndicator(sender_psid, true);
+        await context.send.sendTypingIndicator(sender_psid, true);
 
         const options = {
             uri: "https://www.googleapis.com/customsearch/v1",
@@ -116,28 +140,28 @@ const google = async (sender_psid, params) => {
         };
 
         const result = await rp.get(options),
-              items = result["items"];
+            items = result["items"];
 
         for(let i = 0; i < items.length; ++i) {
             if(items[i].kind !== "customsearch#result") continue;
 
-            await messenger.sendText(sender_psid, `${items[i].title}\n${items[i].snippet}`);
+            await context.send.sendText(sender_psid, `${items[i].title}\n${items[i].snippet}`);
         }
     } catch(err) {
-        await messenger.sendText(sender_psid, "No results found.");
+        await context.send.sendText(sender_psid, "No results found.");
     } finally {
-        await messenger.sendTypingIndicator(sender_psid, false);
+        await context.send.sendTypingIndicator(sender_psid, false);
     }
 };
 
-const duckduckgo = async (sender_psid, params) => {
+const duckduckgo = async (context, sender_psid, params) => {
     if(!params || !/\S/.test(params)) {
-        await messenger.sendText(sender_psid, "Enter  your search terms. (Example: !duckduckgo Nisio Isin)");
+        await context.send.sendText(sender_psid, "Enter  your search terms. (Example: !duckduckgo Nisio Isin)");
         return;
     }
 
     try {
-        await messenger.sendTypingIndicator(sender_psid, true);
+        await context.send.sendTypingIndicator(sender_psid, true);
 
         const result = await rp.get({
             uri: "https://api.duckduckgo.com/",
@@ -149,59 +173,54 @@ const duckduckgo = async (sender_psid, params) => {
             }
         });
 
-        await messenger.sendText(sender_psid, `${result.AbstractSource}\n${result.AbstractText}`);
+        await context.send.sendText(sender_psid, `${result.AbstractSource}\n${result.AbstractText}`);
     } catch(err) {
-        await messenger.sendText(sender_psid, "No results found.");
+        await context.send.sendText(sender_psid, "No results found.");
     } finally {
-        await messenger.sendTypingIndicator(sender_psid, false);
+        await context.send.sendTypingIndicator(sender_psid, false);
     }
 };
 
-const wanikani = async (sender_psid, params) => {
+const wanikani = async (context, sender_psid, params) => {
     if(params) {
         if(/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/.test(params)) {
             await database.setWaniKaniKey(sender_psid, params);
-            await messenger.sendText(sender_psid, "Successfully set WaniKani API key.");
+            await context.send.sendText(sender_psid, "Successfully set WaniKani API key.");
             return;
         } else {
-            await messenger.sendText(sender_psid, "Invalid WaniKani API key.");
+            await context.send.sendText(sender_psid, "Invalid WaniKani API key.");
             return;
         }
     }
 
     const api_key = await database.getWaniKaniKey(sender_psid);
     if(!api_key) {
-        await messenger.sendText(sender_psid, "WaniKani API key not found, please set an API Key first using !wanikani <api_key>.");
+        await context.send.sendText(sender_psid, "WaniKani API key not found, please set an API Key first using !wanikani <api_key>.");
         return;
     }
 
     try {
-        await messenger.sendTypingIndicator(sender_psid, true);
+        await context.send.sendTypingIndicator(sender_psid, true);
 
-        const response = await rp.get({
-            uri: "https://api.wanikani.com/v2/user",
-            json: true,
-            headers: {
-                Authorization: `Bearer ${api_key}`
-            }
-        });
+        const wanikani = WaniKani(api_key),
+            response = await wanikani.user();
 
-        await messenger.sendText(sender_psid, `${response.data.username}\nLevel: ${response.data.level}\nStarted at: ${moment(response.data.started_at).format("d MMMM YYYY")}`);
+        await context.send.sendText(sender_psid, `${response.data.username}\nLevel: ${response.data.level}\nStarted at: ${moment(response.data.started_at).format("d MMMM YYYY")}`);
     } catch(err) {
-        await messenger.sendText(sender_psid, "Unable to get user data from WaniKani.");
+        await context.send.sendText(sender_psid, "Unable to get user data from WaniKani.");
     } finally {
-        await messenger.sendTypingIndicator(sender_psid, false);
+        await context.send.sendTypingIndicator(sender_psid, false);
     }
 };
 
-const help = async(sender_psid, params) => {
+const help = async(context, sender_psid, params) => {
     if(!params || !/\S/.test(params)) {
-        await messenger.sendText(sender_psid, "Enter the name of the command you need help with. (Example: !help callme)");
+        await context.send.sendText(sender_psid, "Enter the name of the command you need help with. (Example: !help callme)");
         return;
     }
 
-    await messenger.sendText(sender_psid, "Command documentation is not available at the moment. Please visit the page for the full list of commands and their usage.");
-    await messenger.sendTemplate(sender_psid, [
+    await context.send.sendText(sender_psid, "Command documentation is not available at the moment. Please visit the page for the full list of commands and their usage.");
+    await context.send.sendTemplate(sender_psid, [
         {
             title: "Yotsugi",
             image_url: "https://s3-us-west-2.amazonaws.com/yotsugi.caguicla.me/logo.png",
