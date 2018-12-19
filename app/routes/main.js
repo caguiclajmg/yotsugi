@@ -7,7 +7,9 @@ const express = require("express"),
     conversation = require("../conversation"),
     router = express.Router();
 
-router.get("/", (req, res) => { res.redirect(301, "https://m.me/YotsugiBot"); });
+router.get("/", (req, res) => {
+    res.redirect(301, "https://m.me/YotsugiBot");
+});
 
 router.get("/webhook", (req, res) => {
     const mode = req.query["hub.mode"],
@@ -37,12 +39,12 @@ router.post("/webhook", (req, res) => {
 
     body.entry.forEach((entry) => {
         const webhook_event = entry.messaging[0],
-            sender_psid = webhook_event.sender.id;
+            psid = webhook_event.sender.id;
 
         if(webhook_event.message) {
-            handleMessage(sender_psid, webhook_event.message).catch((err) => { console.log(err); });
+            handleMessage(req.app.get("context"), psid, webhook_event.message).catch((err) => console.log(err));
         } else if(webhook_event.postback) {
-            handlePostback(sender_psid, webhook_event.postback);
+            handlePostback(psid, webhook_event.postback);
         } else {
             res.sendStatus(501);
         }
@@ -51,37 +53,29 @@ router.post("/webhook", (req, res) => {
     res.status(200).send("EVENT_RECEIVED");
 });
 
-async function handleMessage(sender_psid, received_message) {
+async function handleMessage(context, psid, received_message) {
     let message = received_message.text;
 
     if(!message) return;
 
     if(message.startsWith(config.COMMAND_PREFIX)) {
-        await handleCommand(sender_psid, message);
+        message = message.slice(config.COMMAND_PREFIX.length);
+
+        let [command, ...params] = message.split(" ");
+        command = command.toLowerCase();
+        params = params.join(" ");
+
+        if(commands.hasOwnProperty(command)) {
+            await commands[command](psid, params);
+        } else {
+            await context.send.sendText(psid, `Unrecognized command ${command}, type !help for a list of commands.`);
+        }
     } else {
-        await handleConversation(sender_psid, message);
+        await conversation.handleMessage(psid, message);
     }
 }
 
-async function handleConversation(sender_psid, message) {
-    await conversation.handleMessage(sender_psid, message);
-}
-
-async function handleCommand(sender_psid, message) {
-    message = message.slice(config.COMMAND_PREFIX.length);
-
-    let [command, ...params] = message.split(" ");
-    command = command.toLowerCase();
-    params = params.join(" ");
-
-    if(commands.hasOwnProperty(command)) {
-        commands[command](sender_psid, params);
-    } else {
-        await messenger.sendText(sender_psid, `Unrecognized command ${command}!`);
-    }
-}
-
-function handlePostback(sender_psid, received_postback) {
+function handlePostback(psid, received_postback) {
 }
 
 module.exports = router;

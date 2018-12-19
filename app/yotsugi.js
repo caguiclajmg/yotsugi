@@ -2,7 +2,8 @@
 
 const express = require("express"),
     bodyParser = require("body-parser"),
-    config = require("../config");
+    config = require("../config"),
+    { Send } = require("./helpers/facebook");
 
 module.exports = exports = class Yotsugi {
     constructor() {
@@ -10,6 +11,11 @@ module.exports = exports = class Yotsugi {
         this._app.use(bodyParser.json());
 
         this._app.use(require("./routes/main"));
+
+        this._app.set("context", {
+            app: this,
+            send: new Send(config.APP_PAGE_TOKEN)
+        });
     }
 
     run() {
