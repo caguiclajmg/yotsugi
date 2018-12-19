@@ -1,7 +1,6 @@
 "use strict";
 
-const rp = require("request-promise"),
-    config = require("../../config");
+const rp = require("request-promise");
 
 const gelbooru = async (context, sender_psid, params) => {
     try {
@@ -16,8 +15,8 @@ const gelbooru = async (context, sender_psid, params) => {
                     q: "index",
                     json: 1,
                     tags: params,
-                    api_key: config.GELBOORU_KEY,
-                    user_id: config.GELBOORU_USERID
+                    api_key: context.config.GELBOORU_KEY,
+                    user_id: context.config.GELBOORU_USERID
                 }
             }),
             index = Math.floor(Math.random() * images.length),

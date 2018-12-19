@@ -3,7 +3,6 @@
 const rp = require("request-promise"),
     h2p = require("html2plaintext"),
     moment = require("moment"),
-    config = require("../../config"),
     database = require("../database"),
     WaniKani = require("../helpers/wanikani");
 
@@ -23,7 +22,7 @@ const translate = async (context, sender_psid, params) => {
             uri: "https://translate.yandex.net/api/v1.5/tr.json/translate",
             json: true,
             qs: {
-                key: config.YANDEX_TRANSLATE_KEY,
+                key: context.config.YANDEX_TRANSLATE_KEY,
                 text: text,
                 lang: lang
             }
@@ -98,7 +97,7 @@ const weather = async (context, sender_psid, params) => {
             json: true,
             qs: {
                 zip: params,
-                appid: config.OPENWEATHERMAP_KEY
+                appid: context.config.OPENWEATHERMAP_KEY
             }
         });
 
@@ -133,8 +132,8 @@ const google = async (context, sender_psid, params) => {
             uri: "https://www.googleapis.com/customsearch/v1",
             json: true,
             qs: {
-                cx: config.GOOGLE_CX,
-                key: config.GOOGLE_KEY,
+                cx: context.config.GOOGLE_CX,
+                key: context.config.GOOGLE_KEY,
                 q: params
             }
         };
