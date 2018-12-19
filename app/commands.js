@@ -1,5 +1,9 @@
 "use strict";
 
+const fs = require("fs"),
+    path = require("path"),
+    config = require("../config.js");
+
 function loadModule(path) {
     const module = require(path),
         commands = {};
@@ -12,10 +16,19 @@ function loadModule(path) {
     return commands;
 }
 
-function loadCoreModules() {
-    let commands;
+function loadModules() {
+    const blacklist = config.MODULE_BLACKLIST || "",
+        moduleBlacklist = blacklist.split(",").map(module => module.trim()),
+        modulePath = path.join(__dirname, "commands");
 
-    ["utility", "weeb"].forEach((module) => {
+    if(!fs.existsSync(modulePath)) return null;
+
+    let commands;
+    fs.readdirSync(modulePath).forEach((module) => {
+        const moduleName = path.parse(module).name;
+
+        if(moduleBlacklist.includes(moduleName.toUpperCase())) return;
+
         console.log(`Loading module: ${module}`);
         commands = Object.assign({}, commands, loadModule(`./commands/${module}`));
     });
@@ -23,23 +36,4 @@ function loadCoreModules() {
     return commands;
 }
 
-function loadUserModules() {
-    const fs = require("fs"),
-        path = require("path").join(__dirname, "commands/user");
-    let commands;
-
-    if(!fs.existsSync(path)) return null;
-
-    fs.readdirSync(path).forEach((module) => {
-        console.log(`Loading module: ${module}`);
-        commands = Object.assign({}, commands, loadModule(`./commands/user/${module}`));
-    });
-
-    return commands;
-}
-
-function loadModules() {
-    return Object.assign({}, loadCoreModules(), loadUserModules());
-}
-
-module.exports = loadModules();
+module.exports = exports = loadModules();
