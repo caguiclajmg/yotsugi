@@ -4,7 +4,7 @@ const rp = require("request-promise"),
     h2p = require("html2plaintext"),
     moment = require("moment"),
     database = require("../database"),
-    WaniKani = require("../helpers/wanikani");
+    { WaniKani } = require("../helpers/wanikani");
 
 const translate = async (context, sender_psid, params) => {
     let [lang, ...text] = params.split(" ");
