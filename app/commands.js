@@ -18,7 +18,7 @@ function loadModule(path) {
 
 function loadModules() {
     const blacklist = config.MODULE_BLACKLIST || "",
-        moduleBlacklist = blacklist.split(",").map(module => module.trim()),
+        moduleBlacklist = blacklist.split(",").map(module => module.trim().toUpperCase()),
         modulePath = path.join(__dirname, "commands");
 
     if(!fs.existsSync(modulePath)) return null;
