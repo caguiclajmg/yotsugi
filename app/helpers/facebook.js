@@ -62,7 +62,7 @@ class Send {
     }
 
     async sendSenderAction(psid, sender_action) {
-        return await this.sendResponse(psid, {
+        return await this.send(psid, {
             sender_action: sender_action
         });
     }
