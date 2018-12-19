@@ -46,8 +46,16 @@ const safebooru = async (context, sender_psid, params) => {
         await context.send.sendTypingIndicator(sender_psid, true);
 
         const results = await rp.get({
-            uri: `https://safebooru.org/index.php?page=dapi&s=post&q=index&json=1&limit=200&tags=${encodeURIComponent(params + " rating:safe")}`,
-            json: true
+            uri: "https://safebooru.org/index.php",
+            json: true,
+            qs: {
+                page: "dapi",
+                s: "post",
+                q: "index",
+                json: 1,
+                limit: 200,
+                tags: `${params} rating:safe`
+            }
         });
 
         if(!results) throw new Error();

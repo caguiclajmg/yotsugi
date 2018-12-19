@@ -8,8 +8,17 @@ const gelbooru = async (context, sender_psid, params) => {
         await context.send.sendTypingIndicator(sender_psid, true);
 
         const images = await rp({
-                uri: `https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&tags=${encodeURIComponent(params)}&api_key=${config.GELBOORU_KEY}&user_id=${config.GELBOORU_USERID}`,
-                json: true
+                uri: "https://gelbooru.com/index.php",
+                json: true,
+                qs: {
+                    page: "dapi",
+                    s: "post",
+                    q: "index",
+                    json: 1,
+                    tags: params,
+                    api_key: config.GELBOORU_KEY,
+                    user_id: config.GELBOORU_USERID
+                }
             }),
             index = Math.floor(Math.random() * images.length),
             url = images[index].file_url;
