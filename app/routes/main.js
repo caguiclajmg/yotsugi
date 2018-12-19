@@ -3,7 +3,6 @@
 const express = require("express"),
     commands = require("../commands"),
     config = require("../../config"),
-    messenger = require("../messenger"),
     conversation = require("../conversation"),
     router = express.Router();
 
@@ -66,7 +65,7 @@ async function handleMessage(context, psid, received_message) {
         params = params.join(" ");
 
         if(commands.hasOwnProperty(command)) {
-            await commands[command](psid, params);
+            await commands[command](context, psid, params);
         } else {
             await context.send.sendText(psid, `Unrecognized command ${command}, type !help for a list of commands.`);
         }

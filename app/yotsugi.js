@@ -14,6 +14,7 @@ module.exports = exports = class Yotsugi {
 
         this._app.set("context", {
             app: this,
+            config: config,
             send: new Send(config.APP_PAGE_TOKEN)
         });
     }
