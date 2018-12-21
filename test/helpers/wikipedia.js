@@ -10,8 +10,16 @@ describe("Wikipedia", () => {
     it("query", () => {
         return wikipedia.query("Wikipedia").then((results) => {
             expect(results).to.have.property("query");
-            expect(results.query).to.have.property("search");
-            expect(results.query.search).to.be.an("array");
+
+            const query = results.query;
+            expect(query).to.have.property("search");
+
+            const search = query.search;
+            expect(search).to.be.an("array");
+
+            search.forEach((item) => {
+                expect(item).to.have.property("title");
+            });
         });
     }).timeout(0);
 });
