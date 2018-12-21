@@ -2,7 +2,7 @@
 
 const rp = require("request-promise");
 
-module.exports = exports = class WaniKani {
+class WaniKani {
     constructor(api_key) {
         this.api_key = api_key;
         this.base_uri = "https://api.wanikani.com/v2";
@@ -71,4 +71,8 @@ module.exports = exports = class WaniKani {
     async srs_stages() {
         return await this._call("/srs_stages");
     }
+}
+
+module.exports = exports = {
+    WaniKani
 };
