@@ -4,7 +4,8 @@ const rp = require("request-promise"),
     h2p = require("html2plaintext"),
     moment = require("moment"),
     database = require("../database"),
-    { WaniKani } = require("../helpers/wanikani");
+    { WaniKani } = require("../helpers/wanikani"),
+    { Wikipedia } = require("../helpers/wikipedia");
 
 const translate = async (context, sender_psid, params) => {
     let [lang, ...text] = params.split(" ");
@@ -45,35 +46,17 @@ const wikipedia = async (context, sender_psid, params) => {
     try {
         await context.send.sendTypingIndicator(sender_psid, true);
 
-        const articles = await rp.get({
-            uri: "https://en.wikipedia.org/w/api.php",
-            json: true,
-            qs: {
-                action: "query",
-                format: "json",
-                list: "search",
-                utf8: 1,
-                srsearch: params
-            }
-        });
+        const wikipedia = new Wikipedia(),
+            articles = await wikipedia.query(params);
 
         if(articles.query.search.length === 0) {
             await context.send.sendText(sender_psid, "No articles with specified title found.");
             return;
         }
 
-        const article = await rp.get({
-            uri: "https://en.wikipedia.org/w/api.php",
-            json: true,
-            qs: {
-                action: "parse",
-                format: "json",
-                prop: "text",
-                page: articles.query.search[0].title
-            }
-        });
+        const article = await wikipedia.parse(articles.query.search[0].title),
+            text = h2p(article.parse.text["*"]);
 
-        const text = h2p(article.parse.text["*"]);
         await context.send.sendText(sender_psid, text);
     } catch(err) {
         console.log(err);
