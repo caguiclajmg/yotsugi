@@ -5,7 +5,8 @@ const rp = require("request-promise"),
     moment = require("moment"),
     database = require("../database"),
     { WaniKani } = require("../helpers/wanikani"),
-    { Wikipedia } = require("../helpers/wikipedia");
+    { Wikipedia } = require("../helpers/wikipedia"),
+    Yandex = require("../helpers/yandex");
 
 const translate = async (context, sender_psid, params) => {
     let [lang, ...text] = params.split(" ");
@@ -19,15 +20,8 @@ const translate = async (context, sender_psid, params) => {
     try {
         await context.send.sendTypingIndicator(sender_psid, true);
 
-        const translation = await rp.get({
-            uri: "https://translate.yandex.net/api/v1.5/tr.json/translate",
-            json: true,
-            qs: {
-                key: context.config.YANDEX_TRANSLATE_KEY,
-                text: text,
-                lang: lang
-            }
-        });
+        const translate = new Yandex.Translate(context.config.YANDEX_TRANSLATE_KEY),
+            translation = await translate.translate(lang, text);
 
         await context.send.sendText(sender_psid, `${translation.text[0]}\n\nPowered by Yandex.Translate`);
     } catch(err) {
