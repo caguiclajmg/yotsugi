@@ -21,6 +21,12 @@ const ratewaifu = async (context, sender_psid, params) => {
         return;
     }
 
+    if(params.toUpperCase() === "Yamada Tae".toUpperCase()) {
+        await context.send.sendText(sender_psid, "The Legendary Yamada Tae");
+        await context.send.sendAttachmentFromURL(sender_psid, "image", "https://s3-us-west-2.amazonaws.com/yotsugi.caguicla.me/yamada_tae.gif");
+        return;
+    }
+
     const score = Math.floor(Math.random() * 11);
 
     let rating;
