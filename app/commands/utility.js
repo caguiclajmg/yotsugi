@@ -121,7 +121,7 @@ const google = async (context, sender_psid, params) => {
         for(let i = 0; i < items.length; ++i) {
             if(items[i].kind !== "customsearch#result") continue;
 
-            await context.send.sendText(sender_psid, `${items[i].title}\n${items[i].snippet}`);
+            await context.send.sendText(sender_psid, `(${i + 1}) ${items[i].title}\n${items[i].snippet}`);
         }
     } catch(err) {
         await context.send.sendText(sender_psid, "No results found.");
