@@ -5,7 +5,8 @@ const rp = require("request-promise"),
     moment = require("moment"),
     database = require("../database"),
     { WaniKani } = require("../helpers/wanikani"),
-    { Wikipedia } = require("../helpers/wikipedia");
+    { Wikipedia } = require("../helpers/wikipedia"),
+    Yandex = require("../helpers/yandex");
 
 const translate = async (context, sender_psid, params) => {
     let [lang, ...text] = params.split(" ");
@@ -19,15 +20,8 @@ const translate = async (context, sender_psid, params) => {
     try {
         await context.send.sendTypingIndicator(sender_psid, true);
 
-        const translation = await rp.get({
-            uri: "https://translate.yandex.net/api/v1.5/tr.json/translate",
-            json: true,
-            qs: {
-                key: context.config.YANDEX_TRANSLATE_KEY,
-                text: text,
-                lang: lang
-            }
-        });
+        const translate = new Yandex.Translate(context.config.YANDEX_TRANSLATE_KEY),
+            translation = await translate.translate(lang, text);
 
         await context.send.sendText(sender_psid, `${translation.text[0]}\n\nPowered by Yandex.Translate`);
     } catch(err) {
@@ -122,15 +116,37 @@ const google = async (context, sender_psid, params) => {
         };
 
         const result = await rp.get(options),
-            items = result["items"];
+            items = result["items"].filter(item => item.kind === "customsearch#result"),
+            quickReplies = [];
 
         for(let i = 0; i < items.length; ++i) {
-            if(items[i].kind !== "customsearch#result") continue;
+            quickReplies.push({
+                content_type: "text",
+                title: (i + 1).toString(),
+                payload: `!fetchpage ${items[i].link}`
+            });
 
-            await context.send.sendText(sender_psid, `${items[i].title}\n${items[i].snippet}`);
+            await context.send.sendText(sender_psid, `(${i + 1}) ${items[i].title}\n${items[i].snippet}`, i === items.length - 1 ? quickReplies : null);
         }
     } catch(err) {
+        console.log(err);
         await context.send.sendText(sender_psid, "No results found.");
+    } finally {
+        await context.send.sendTypingIndicator(sender_psid, false);
+    }
+};
+
+const fetchpage = async (context, sender_psid, params) => {
+    try {
+        await context.send.sendTypingIndicator(sender_psid, true);
+
+        const page = await rp.get(params),
+            content = h2p(page);
+
+        await context.send.sendText(sender_psid, content);
+    } catch(err) {
+        console.log(err);
+        await context.send.sendText(sender_psid, "Unable to retrieve page, please try again later.");
     } finally {
         await context.send.sendTypingIndicator(sender_psid, false);
     }
@@ -222,6 +238,7 @@ module.exports = {
     weather,
     callme,
     google,
+    fetchpage,
     wanikani,
     help
 };
