@@ -26,19 +26,15 @@ class Send {
             responses = [];
 
         for(let i = 0; i < chunks.length; ++i) {
-            responses.push(await this.send(psid, {
+            const response = {
                 message: {
                     text: chunks[i]
                 }
-            }));
-        }
+            };
 
-        if(quick_replies) {
-            responses.push(await this.send(psid, {
-                message: {
-                    quick_replies: quick_replies
-                }
-            }));
+            if(i === chunks.length - 1 && quick_replies) response.message.quick_replies = quick_replies;
+
+            responses.push(await this.send(psid, response));
         }
 
         return responses;
