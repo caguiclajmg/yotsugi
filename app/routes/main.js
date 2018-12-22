@@ -54,6 +54,8 @@ router.post("/webhook", (req, res) => {
 });
 
 async function handleMessage(context, psid, received_message) {
+    console.log(received_message);
+
     const text = received_message.quick_reply ? received_message.quick_reply.payload : received_message.message;
 
     if(!text) return;
