@@ -123,7 +123,7 @@ const google = async (context, sender_psid, params) => {
             quickReplies.push({
                 content_type: "text",
                 title: (i + 1).toString(),
-                payload: `!fetch ${items[i].formattedUrl}`
+                payload: `!fetchpage ${items[i].formattedUrl}`
             });
 
             await context.send.sendText(sender_psid, `(${i + 1}) ${items[i].title}\n${items[i].snippet}`, i === items.length - 1 ? quickReplies : null);
