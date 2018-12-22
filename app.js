@@ -1,6 +1,7 @@
 "use strict";
 
 const Yotsugi = require("./app/yotsugi"),
-    yotsugi = new Yotsugi();
+    config = require("./config"),
+    yotsugi = new Yotsugi(config);
 
 yotsugi.run();
