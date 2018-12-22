@@ -21,7 +21,7 @@ class Send {
         });
     }
 
-    async sendText(psid, text, quick_replies = null) {
+    async sendText(psid, text) {
         const chunks = text.match(/[\s\S]{1,2000}/g),
             responses = [];
 
@@ -33,15 +33,15 @@ class Send {
             }));
         }
 
-        if(quick_replies) {
-            responses.push(await this.send(psid, {
-                message: {
-                    quick_replies: quick_replies
-                }
-            }));
-        }
-
         return responses;
+    }
+
+    async sendQuickReply(psid, quickReplies) {
+        return await this.send(psid, {
+            message: {
+                quick_replies: quickReplies
+            }
+        });
     }
 
     async sendAttachment(psid, type, attachment) {

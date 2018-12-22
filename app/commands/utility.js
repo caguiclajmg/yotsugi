@@ -131,7 +131,7 @@ const google = async (context, sender_psid, params) => {
             await context.send.sendText(sender_psid, `(${i + 1}) ${items[i].title}\n${items[i].snippet}`);
         }
 
-        await context.send.sendText(sender_psid, null, quickReplies);
+        await context.send.sendQuickReply(sender_psid, quickReplies);
     } catch(err) {
         console.log(err);
         await context.send.sendText(sender_psid, "No results found.");
