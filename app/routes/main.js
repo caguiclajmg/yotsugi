@@ -29,7 +29,8 @@ router.get("/webhook", (req, res) => {
 });
 
 router.post("/webhook", (req, res) => {
-    let body = req.body;
+    const context = req.app.get("context"),
+        body = req.body;
 
     if(body.object !== "page") {
         res.sendStatus(404);
@@ -41,7 +42,7 @@ router.post("/webhook", (req, res) => {
             psid = webhook_event.sender.id;
 
         if(webhook_event.message) {
-            handleMessage(req.app.get("context"), psid, webhook_event.message).catch((err) => console.log(err));
+            handleMessage(context, psid, webhook_event.message).catch((err) => console.log(err));
         } else if(webhook_event.postback) {
             handlePostback(psid, webhook_event.postback);
         } else {
@@ -70,7 +71,7 @@ async function handleMessage(context, psid, received_message) {
             await context.send.sendText(psid, `Unrecognized command ${command}, type !help for a list of commands.`);
         }
     } else {
-        await conversation.handleMessage(psid, message);
+        await conversation.handleMessage(context, psid, message);
     }
 }
 

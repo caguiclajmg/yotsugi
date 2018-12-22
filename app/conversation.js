@@ -1,6 +1,5 @@
 const apiai = require("apiai"),
     config = require("../config"),
-    messenger = require("./messenger"),
     agent = apiai(config.DIALOGFLOW_TOKEN);
 
 const textRequest = async (agent, query, options) => {
@@ -12,12 +11,12 @@ const textRequest = async (agent, query, options) => {
     });
 };
 
-const handleMessage = async (sender_psid, message) => {
+const handleMessage = async (context, psid, message) => {
     const response = await textRequest(agent, message, {
-        sessionId: sender_psid
+        sessionId: psid
     });
 
-    await messenger.sendText(sender_psid, response.result.fulfillment.speech);
+    await context.send.sendText(psid, response.result.fulfillment.speech);
 };
 
 module.exports = {
