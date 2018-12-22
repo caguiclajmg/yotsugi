@@ -145,6 +145,7 @@ const fetchpage = async (context, sender_psid, params) => {
 
         await context.send.sendText(sender_psid, content);
     } catch(err) {
+        console.log(err);
         await context.send.sendText(sender_psid, "Unable to retrieve page, please try again later.");
     } finally {
         await context.send.sendTypingIndicator(sender_psid, false);
