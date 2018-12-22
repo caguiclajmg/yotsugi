@@ -54,14 +54,12 @@ router.post("/webhook", (req, res) => {
 });
 
 async function handleMessage(context, psid, received_message) {
-    let message = received_message.text;
+    const text = received_message.text;
 
-    if(!message) return;
+    if(!text) return;
 
-    if(message.startsWith(config.COMMAND_PREFIX)) {
-        message = message.slice(config.COMMAND_PREFIX.length);
-
-        let [command, ...params] = message.split(" ");
+    if(text.startsWith(config.COMMAND_PREFIX)) {
+        let [command, ...params] = text.slice(config.COMMAND_PREFIX.length).split(" ");
         command = command.toLowerCase();
         params = params.join(" ");
 
@@ -71,7 +69,7 @@ async function handleMessage(context, psid, received_message) {
             await context.send.sendText(psid, `Unrecognized command ${command}, type !help for a list of commands.`);
         }
     } else {
-        await conversation.handleMessage(context, psid, message);
+        await conversation.handleMessage(context, psid, text);
     }
 }
 
