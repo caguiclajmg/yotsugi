@@ -1,6 +1,7 @@
 "use strict";
 
-const rp = require("request-promise");
+const rp = require("request-promise"),
+    { Konachan } = require("../helpers/konachan");
 
 const ratewaifu = async (context, sender_psid, params) => {
     if(!params) {
@@ -72,6 +73,32 @@ const safebooru = async (context, sender_psid, params) => {
     }
 };
 
+const konachan = async (context, psid, params) => {
+    try {
+        await context.send.sendTypingIndicator(psid, true);
+
+        const konachan = new Konachan(),
+            posts = await konachan.posts_list({
+                limit: 100,
+                tags: `${params} rating:safe`
+            });
+
+        if(!posts || posts.length === 0) {
+            await context.send.sendText(psid, "No images with specified tags found.");
+            return;
+        }
+
+        const index = Math.floor(Math.random() * Math.floor(posts.length)),
+            url = posts[index].file_url;
+
+        await context.send.sendAttachmentFromURL(psid, "image", url);
+    } catch(err) {
+        await context.send.sendText(psid, "No images with specified tags found.");
+    } finally {
+        await context.send.sendTypingIndicator(psid, false);
+    }
+};
+
 const EIGHTBALL_REPLIES = [
     "It is certain.",
     "It is decidedly so.",
@@ -112,5 +139,6 @@ const eightball = async (context, sender_psid, params) => {
 module.exports = {
     ratewaifu,
     safebooru,
+    konachan,
     eightball
 };
