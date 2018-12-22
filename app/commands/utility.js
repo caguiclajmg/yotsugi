@@ -140,7 +140,7 @@ const fetchpage = async (context, sender_psid, params) => {
     try {
         await context.send.sendTypingIndicator(sender_psid, true);
 
-        const page = rp.get(params),
+        const page = await rp.get(params),
             content = h2p(page);
 
         await context.send.sendText(sender_psid, content);
