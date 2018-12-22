@@ -21,7 +21,7 @@ class Send {
         });
     }
 
-    async sendText(psid, text) {
+    async sendText(psid, text, quick_replies = null) {
         const chunks = text.match(/[\s\S]{1,2000}/g),
             responses = [];
 
@@ -29,6 +29,14 @@ class Send {
             responses.push(await this.send(psid, {
                 message: {
                     text: chunks[i]
+                }
+            }));
+        }
+
+        if(quick_replies) {
+            responses.push(await this.send(psid, {
+                message: {
+                    quick_replies: quick_replies
                 }
             }));
         }

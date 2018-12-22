@@ -116,14 +116,24 @@ const google = async (context, sender_psid, params) => {
         };
 
         const result = await rp.get(options),
-            items = result["items"];
+            items = result["items"],
+            quickReplies = [];
 
         for(let i = 0; i < items.length; ++i) {
             if(items[i].kind !== "customsearch#result") continue;
 
+            quickReplies.push({
+                content_type: "text",
+                title: (i + 1).toString(),
+                payload: items[i].formattedUrl
+            });
+
             await context.send.sendText(sender_psid, `(${i + 1}) ${items[i].title}\n${items[i].snippet}`);
         }
+
+        await context.send.sendText(sender_psid, null, quickReplies);
     } catch(err) {
+        console.log(err);
         await context.send.sendText(sender_psid, "No results found.");
     } finally {
         await context.send.sendTypingIndicator(sender_psid, false);
