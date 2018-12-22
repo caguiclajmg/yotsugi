@@ -123,7 +123,7 @@ const google = async (context, sender_psid, params) => {
             quickReplies.push({
                 content_type: "text",
                 title: (i + 1).toString(),
-                payload: items[i].formattedUrl
+                payload: `!fetch ${items[i].formattedUrl}`
             });
 
             await context.send.sendText(sender_psid, `(${i + 1}) ${items[i].title}\n${items[i].snippet}`, i === items.length - 1 ? quickReplies : null);
@@ -131,6 +131,21 @@ const google = async (context, sender_psid, params) => {
     } catch(err) {
         console.log(err);
         await context.send.sendText(sender_psid, "No results found.");
+    } finally {
+        await context.send.sendTypingIndicator(sender_psid, false);
+    }
+};
+
+const fetchpage = async (context, sender_psid, params) => {
+    try {
+        await context.send.sendTypingIndicator(sender_psid, true);
+
+        const page = rp.get(params),
+            content = h2p(page);
+
+        await context.send.sendText(sender_psid, content);
+    } catch(err) {
+        await context.send.sendText(sender_psid, "Unable to retrieve page, please try again later.");
     } finally {
         await context.send.sendTypingIndicator(sender_psid, false);
     }
@@ -222,6 +237,7 @@ module.exports = {
     weather,
     callme,
     google,
+    fetchpage,
     wanikani,
     help
 };
