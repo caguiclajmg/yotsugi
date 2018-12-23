@@ -2,6 +2,7 @@
 
 const express = require("express"),
     bodyParser = require("body-parser"),
+    database = require("./database"),
     Facebook = require("./helpers/facebook");
 
 module.exports = exports = class Yotsugi {
@@ -16,7 +17,8 @@ module.exports = exports = class Yotsugi {
         this._app.set("context", {
             app: this,
             config: this._config,
-            send: new Facebook.Send(config.APP_PAGE_TOKEN)
+            send: new Facebook.Send(config.APP_PAGE_TOKEN),
+            database: database
         });
     }
 
