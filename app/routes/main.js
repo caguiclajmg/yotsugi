@@ -1,6 +1,8 @@
 "use strict";
 
 const express = require("express"),
+    crypto = require("crypto"),
+    bodyParser = require("body-parser"),
     commands = require("../commands"),
     config = require("../../config"),
     conversation = require("../conversation"),
@@ -28,7 +30,9 @@ router.get("/webhook", (req, res) => {
     res.status(200).send(challenge);
 });
 
-router.post("/webhook", (req, res) => {
+router.post("/webhook", bodyParser.json({
+    verify: verifySignature
+}), (req, res) => {
     const context = req.app.get("context"),
         body = req.body;
 
@@ -52,6 +56,20 @@ router.post("/webhook", (req, res) => {
 
     res.status(200).send("EVENT_RECEIVED");
 });
+
+function calculateSignature(secret, buf) {
+    var hmac = crypto.createHmac("sha1", secret);
+    hmac.update(buf);
+    return `sha1=${hmac.digest("hex")}`;
+}
+
+function verifySignature(req, res, buf) {
+    const context = req.app.get("context"),
+        expected = req.header("x-hub-signature"),
+        calculated = calculateSignature(context.config.APP_SECRET, buf);
+
+    if(calculated !== expected) throw new Error("Unable to validate request!");
+}
 
 async function handleMessage(context, psid, received_message) {
     const text = received_message.quick_reply ? received_message.quick_reply.payload : received_message.text;
