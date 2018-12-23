@@ -5,26 +5,38 @@ const rp = require("request-promise"),
 
 const ratewaifu = async (context, sender_psid, params) => {
     if(!params) {
-        await context.send.sendText(sender_psid, "Type in the name of your waifu.\n\nExample: !ratewaifu Satania");
+        await context.send.sendText(sender_psid, "Type in the name of your waifu.\n\nExample: !ratewaifu Kurumizawa Satanichia McDowell");
         return;
     }
 
-    if(params.toUpperCase() === "Satania".toUpperCase()) {
-        await context.send.sendText(sender_psid, "Ah, I see you're a デビル of culture as well.");
-        await context.send.sendAttachmentFromURL(sender_psid, "video", "https://simg3.gelbooru.com//images/7e/30/7e30b74b172268369138ff0ed078bf9a.webm");
-        return;
-    }
+    const bestWaifus = [
+        {
+            name: "Kurumizawa Satanichia McDowell",
+            rating: "Ah, I see you're a デビル of culture as well. No bulli. 11/10",
+            image: "https://simg3.gelbooru.com//images/90/b3/90b32cca75242bfcfa5d0d109d9480a8.gif"
+        },
+        {
+            name: "Ononoki Yotsugi",
+            rating: "Yay~ Peace, Peace! 11/10",
+            image: "https://simg3.gelbooru.com//images/04/ea/04eab4e28d24fe39ea79018fd29d6009.gif"
+        },
+        {
+            name: "Yamada Tae",
+            rating: "The Legendary Yamada Tae! 11/10",
+            image: "https://s3-us-west-2.amazonaws.com/yotsugi.caguicla.me/yamada_tae.gif"
+        }
+    ];
 
-    if(params.toUpperCase() === "Yotsugi".toUpperCase()) {
-        await context.send.sendText(sender_psid, "Yay~ Peace, Peace!");
-        await context.send.sendAttachmentFromURL(sender_psid, "image", "https://simg3.gelbooru.com//images/04/ea/04eab4e28d24fe39ea79018fd29d6009.gif");
-        return;
-    }
+    for(let i = 0; i < bestWaifus.length; ++i) {
+        const waifu = bestWaifus[i];
 
-    if(params.toUpperCase() === "Yamada Tae".toUpperCase()) {
-        await context.send.sendText(sender_psid, "The Legendary Yamada Tae");
-        await context.send.sendAttachmentFromURL(sender_psid, "image", "https://s3-us-west-2.amazonaws.com/yotsugi.caguicla.me/yamada_tae.gif");
-        return;
+        if(params.toUpperCase().includes(waifu.name.toUpperCase())) {
+            await context.send.sendTypingIndicator(sender_psid, true);
+            await context.send.sendText(sender_psid, waifu.rating);
+            await context.send.sendAttachmentFromURL(sender_psid, "image", waifu.image);
+            await context.send.sendTypingIndicator(sender_psid, false);
+            return;
+        }
     }
 
     const score = Math.floor(Math.random() * 11);
