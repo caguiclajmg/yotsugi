@@ -42,7 +42,7 @@ const rule34 = async (context, sender_psid, params) => {
 const sankakucomplex = async (context, sender_psid, params) => {
 };
 
-module.exports = {
+module.exports = exports = {
     gelbooru,
     yandere,
     danbooru,

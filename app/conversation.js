@@ -19,6 +19,6 @@ const handleMessage = async (context, psid, message) => {
     await context.send.sendText(psid, response.result.fulfillment.speech);
 };
 
-module.exports = {
+module.exports = exports = {
     handleMessage
 };

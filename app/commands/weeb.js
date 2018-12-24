@@ -117,7 +117,7 @@ const konachan = async (context, psid, params) => {
     }
 };
 
-module.exports = {
+module.exports = exports = {
     ratewaifu,
     safebooru,
     konachan,

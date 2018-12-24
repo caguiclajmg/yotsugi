@@ -268,7 +268,7 @@ const eightball = async (context, sender_psid, params) => {
     await context.send.sendText(sender_psid, reply);
 };
 
-module.exports = {
+module.exports = exports = {
     translate,
     wikipedia,
     weather,
