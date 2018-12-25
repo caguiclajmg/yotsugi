@@ -3,7 +3,6 @@
 const rp = require("request-promise"),
     h2p = require("html2plaintext"),
     moment = require("moment"),
-    database = require("../database"),
     { WaniKani } = require("../helpers/wanikani"),
     { Wikipedia } = require("../helpers/wikipedia"),
     Yandex = require("../helpers/yandex");
@@ -88,7 +87,7 @@ const weather = async (context, sender_psid, params) => {
 
 const callme = async (context, sender_psid, params) => {
     try {
-        await database.setNickname(sender_psid, params);
+        await context.database.setNickname(sender_psid, params);
         await context.send.sendText(sender_psid, params ? `I will now call you ${params}!` : "You removed your nickname.");
     } catch(err) {
         console.log(err);
@@ -182,7 +181,7 @@ const duckduckgo = async (context, sender_psid, params) => {
 const wanikani = async (context, sender_psid, params) => {
     if(params) {
         if(/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/.test(params)) {
-            await database.setWaniKaniKey(sender_psid, params);
+            await context.database.setWaniKaniKey(sender_psid, params);
             await context.send.sendText(sender_psid, "Successfully set WaniKani API key.");
             return;
         } else {
@@ -191,7 +190,7 @@ const wanikani = async (context, sender_psid, params) => {
         }
     }
 
-    const api_key = await database.getWaniKaniKey(sender_psid);
+    const api_key = await context.database.getWaniKaniKey(sender_psid);
     if(!api_key) {
         await context.send.sendText(sender_psid, "WaniKani API key not found, please set an API Key first using !wanikani <api_key>.");
         return;
@@ -269,7 +268,7 @@ const eightball = async (context, sender_psid, params) => {
     await context.send.sendText(sender_psid, reply);
 };
 
-module.exports = {
+module.exports = exports = {
     translate,
     wikipedia,
     weather,

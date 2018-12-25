@@ -23,7 +23,8 @@ class Gelbooru {
 
     async posts_list(options) {
         return await this._query(Object.assign({}, options, {
-            s: "post"
+            s: "post",
+            json: 1
         }));
     }
 

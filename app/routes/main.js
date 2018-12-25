@@ -94,4 +94,4 @@ async function handleMessage(context, psid, received_message) {
 function handlePostback(psid, received_postback) {
 }
 
-module.exports = router;
+module.exports = exports = router;
