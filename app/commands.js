@@ -25,12 +25,14 @@ function loadModules() {
 
     let commands;
     fs.readdirSync(modulePath).forEach((module) => {
+        if(path.extname(module) !== ".js") return;
+
         const moduleName = path.parse(module).name;
 
         if(moduleBlacklist.includes(moduleName.toUpperCase())) return;
 
         console.log(`Loading module: ${module}`);
-        commands = Object.assign({}, commands, loadModule(`./commands/${module}`));
+        commands = Object.assign({}, commands, loadModule(path.join(modulePath, module)));
     });
 
     return commands;
