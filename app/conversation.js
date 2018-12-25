@@ -1,6 +1,9 @@
 const apiai = require("apiai"),
-    config = require("../config"),
-    agent = apiai(config.DIALOGFLOW_TOKEN);
+    config = require("../config");
+
+let agent = null;
+
+if(config.DIALOGFLOW_TOKEN) agent = apiai(config.DIALOGFLOW_TOKEN);
 
 const textRequest = async (agent, query, options) => {
     return new Promise((resolve, reject) => {
@@ -12,11 +15,15 @@ const textRequest = async (agent, query, options) => {
 };
 
 const handleMessage = async (context, psid, message) => {
-    const response = await textRequest(agent, message, {
-        sessionId: psid
-    });
+    if(agent) {
+        const response = await textRequest(agent, message, {
+            sessionId: psid
+        });
 
-    await context.send.sendText(psid, response.result.fulfillment.speech);
+        await context.send.sendText(psid, response.result.fulfillment.speech);
+    } else {
+        await context.send.sendText(psid, "...");
+    }
 };
 
 module.exports = exports = {
