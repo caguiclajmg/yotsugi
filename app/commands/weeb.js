@@ -9,7 +9,7 @@ const ratewaifu = async (context, sender_psid, params) => {
         return;
     }
 
-    const bestWaifus = [
+    const preset = [
         {
             name: "Kurumizawa Satanichia McDowell",
             rating: "Ah, I see you're a デビル of culture as well. No bulli. 11/10",
@@ -24,11 +24,16 @@ const ratewaifu = async (context, sender_psid, params) => {
             name: "Yamada Tae",
             rating: "The Legendary Yamada Tae! 11/10",
             image: "https://s3-us-west-2.amazonaws.com/yotsugi.caguicla.me/yamada_tae.gif"
+        },
+        {
+            name: "PewDiePie",
+            rating: "Don't forget to subscribe. 11/10",
+            image: "https://s3-us-west-2.amazonaws.com/yotsugi.caguicla.me/kjellberg_felix.gif"
         }
     ];
 
-    for(let i = 0; i < bestWaifus.length; ++i) {
-        const waifu = bestWaifus[i];
+    for(let i = 0; i < preset.length; ++i) {
+        const waifu = preset[i];
 
         if(params.toUpperCase().includes(waifu.name.toUpperCase())) {
             await context.send.sendTypingIndicator(sender_psid, true);
