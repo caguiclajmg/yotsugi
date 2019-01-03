@@ -268,6 +268,21 @@ const eightball = async (context, sender_psid, params) => {
     await context.send.sendText(sender_psid, reply);
 };
 
+const time = async(context, sender_psid, params) => {
+    const now = new Date();
+
+    if(!params || !/\S/.test(params)) {
+        await context.send.sendText(sender_psid, "Enter the time zone. (Example: !time America/New_York)");
+        return;
+    }
+
+    try {
+        await context.send.sendText(sender_psid, `${params} Time: ${now.toLocaleString("en-US", { timeZone: params })}`);
+    } catch(err) {
+        await context.send.sendText(sender_psid, "Invalid time zone!");
+    }
+};
+
 module.exports = exports = {
     translate,
     wikipedia,
@@ -277,5 +292,6 @@ module.exports = exports = {
     fetchpage,
     wanikani,
     help,
-    eightball
+    eightball,
+    time
 };
