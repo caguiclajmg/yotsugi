@@ -44,9 +44,13 @@ const ratewaifu = async (context, sender_psid, params) => {
         }
     }
 
-    const score = Math.floor(Math.random() * 11);
+    if(/T.*Series/i.test(params)) {
+        await context.send.sendText(sender_psid, `${params} is garbage, go subscribe to PewDiePie for original content.`);
+        return;
+    }
 
-    let rating;
+    let score = Math.floor(Math.random() * 11),
+        rating;
 
     if(score <= 2) {
         rating = `${params} is trash and you have shit taste. ${score}/10`;
