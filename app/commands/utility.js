@@ -204,6 +204,7 @@ const wanikani = async (context, sender_psid, params) => {
 
         await context.send.sendText(sender_psid, `${response.data.username}\nLevel: ${response.data.level}\nStarted at: ${moment(response.data.started_at).format("d MMMM YYYY")}`);
     } catch(err) {
+        console.log(err);
         await context.send.sendText(sender_psid, "Unable to get user data from WaniKani.");
     } finally {
         await context.send.sendTypingIndicator(sender_psid, false);
