@@ -3,7 +3,7 @@
 module.exports = exports = (sequelize, DataTypes) => {
     const Consumer = sequelize.define("Consumer", {
         id: {
-            type: DataTypes.INTEGER(10),
+            type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
