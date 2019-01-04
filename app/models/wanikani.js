@@ -17,12 +17,5 @@ module.exports = exports = (sequelize, DataTypes) => {
         tableName: "wanikani"
     });
 
-    WaniKani.associate = (models) => {
-        models.WaniKani.belongsTo(models.Consumer, {
-            foreignKey: "consumer",
-            targetKey: "id"
-        });
-    };
-
     return WaniKani;
 };
