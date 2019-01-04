@@ -1,6 +1,7 @@
 "use strict";
 
 const fs = require("fs"),
+    crypto = require("crypto"),
     path = require("path"),
     Sequelize = require("sequelize"),
     config = require("../config"),
@@ -55,7 +56,18 @@ const getWaniKaniKey = async(sender_psid) => {
         }
     });
 
-    return row ? row.api_key : null;
+    if(!row) return null;
+
+    const parts = row.api_key.split(":"),
+        iv = new Buffer(parts.shift(), "hex"),
+        key = new Buffer(parts.join(":"), "hex"),
+        decipher = crypto.createDecipheriv("aes-256-ctr", new Buffer(config.APP_SECRET), iv);
+
+    let dec = decipher.update(key);
+    dec = Buffer.concat([dec, decipher.final()]);
+    console.log(dec.toString());
+
+    return dec.toString();
 };
 
 const setWaniKaniKey = async(sender_psid, key) => {
@@ -68,9 +80,15 @@ const setWaniKaniKey = async(sender_psid, key) => {
         return;
     }
 
+    const iv = crypto.randomBytes(16),
+        cipher = crypto.createCipheriv("aes-256-ctr", new Buffer(config.APP_SECRET), iv);
+
+    let enc = cipher.update(key);
+    enc = `${iv.toString("hex")}:${Buffer.concat([enc, cipher.final()]).toString("hex")}`;
+
     await db.WaniKani.upsert({
         consumer: sender_psid,
-        api_key: key
+        api_key: enc
     }, {
         where: {
             consumer: sender_psid
