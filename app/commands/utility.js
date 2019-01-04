@@ -199,7 +199,7 @@ const wanikani = async (context, sender_psid, params) => {
     try {
         await context.send.sendTypingIndicator(sender_psid, true);
 
-        const wanikani = WaniKani(api_key),
+        const wanikani = new WaniKani(api_key),
             response = await wanikani.user();
 
         await context.send.sendText(sender_psid, `${response.data.username}\nLevel: ${response.data.level}\nStarted at: ${moment(response.data.started_at).format("d MMMM YYYY")}`);
