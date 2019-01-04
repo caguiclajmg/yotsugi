@@ -9,7 +9,8 @@ const fs = require("fs"),
         dialectOptions: {
             ssl: true
         },
-        operatorsAliases: false
+        operatorsAliases: false,
+        logging: false
     }),
     basePath = path.join(__dirname, "models");
 
