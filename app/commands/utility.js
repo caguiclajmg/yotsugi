@@ -19,7 +19,7 @@ const translate = async (context, sender_psid, params) => {
     try {
         await context.send.sendTypingIndicator(sender_psid, true);
 
-        const translate = new Yandex.Translate(context.config.YANDEX_TRANSLATE_KEY),
+        const translate = new Yandex.Translate(process.env.YANDEX_TRANSLATE_KEY),
             translation = await translate.translate(lang, text);
 
         await context.send.sendText(sender_psid, `${translation.text[0]}\n\nPowered by Yandex.Translate`);
@@ -73,7 +73,7 @@ const weather = async (context, sender_psid, params) => {
             json: true,
             qs: {
                 zip: params,
-                appid: context.config.OPENWEATHERMAP_KEY
+                appid: process.env.OPENWEATHERMAP_KEY
             }
         });
 
@@ -108,8 +108,8 @@ const google = async (context, sender_psid, params) => {
             uri: "https://www.googleapis.com/customsearch/v1",
             json: true,
             qs: {
-                cx: context.config.GOOGLE_CX,
-                key: context.config.GOOGLE_KEY,
+                cx: process.env.GOOGLE_CX,
+                key: process.env.GOOGLE_KEY,
                 q: params
             }
         };

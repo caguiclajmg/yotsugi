@@ -6,9 +6,7 @@ const express = require("express"),
     Facebook = require("./helpers/facebook");
 
 module.exports = exports = class Yotsugi {
-    constructor(config) {
-        this._config = config;
-
+    constructor() {
         this._app = express();
         this._app.use(bodyParser.json());
 
@@ -16,14 +14,13 @@ module.exports = exports = class Yotsugi {
 
         this._app.set("context", {
             app: this,
-            config: this._config,
-            send: new Facebook.Send(config.APP_PAGE_TOKEN),
+            send: new Facebook.Send(process.env.APP_PAGE_TOKEN),
             database: database
         });
     }
 
     run() {
-        this._app.listen(this._config.PORT, () => {
+        this._app.listen(process.env.PORT || 5000, () => {
             console.log("Starting Yotsugi...");
         });
     }
