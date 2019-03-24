@@ -1,7 +1,8 @@
 "use strict";
 
 const rp = require("request-promise"),
-    { Konachan } = require("../helpers/konachan");
+    { Konachan } = require("../helpers/konachan"),
+    { Jikan } = require("../helpers/jikan");
 
 const ratewaifu = async (context, sender_psid, params) => {
     if(!params) {
@@ -126,8 +127,54 @@ const konachan = async (context, psid, params) => {
     }
 };
 
+const anime = async (context, psid, params) => {
+    try {
+        await context.send.sendTypingIndicator(psid, true);
+
+        params = params.split(" ");
+        if(!params[0]) throw "";
+
+        if(/season/i.test(params[0])) {
+            if(/summer|spring|fall|winter/i.test(params[1])) {
+                if(/\d{4}/i.test(params[2])) {
+                    const jikan = new Jikan();
+                    const response = await jikan.season(params[2], params[1]);
+
+                    if(!response || !response.anime) {
+                        await context.send.sendText(psid, "No results found for specified season!");
+                        return;
+                    }
+
+                    const anime = response.anime;
+                    let message = "";
+
+                    for(var i = 0; i < anime.length; ++i) {
+                        message += `${i + 1}. ${anime[i].title}\n`;
+                    }
+
+                    await context.send.sendText(psid, message);
+                }
+            } else if(/current/i.test(params[1])) {
+                await context.send.sendText(psid, "Unrecognized command, visit the page for a list of supported commands.");
+            }
+        } else if(/search/i.test(params[0])) {
+            await context.send.sendText(psid, "Search function is currently not available.");
+
+            return;
+        }
+
+        await context.send.sendText(psid, "Unrecognized command, visit the page for a list of supported commands.");
+    } catch(err) {
+        console.log(err);
+        await context.send.sendText(psid, "Unable to perform command, please try again later.");
+    } finally {
+        await context.send.sendTypingIndicator(psid, false);
+    }
+};
+
 module.exports = exports = {
     ratewaifu,
     safebooru,
     konachan,
+    anime,
 };
