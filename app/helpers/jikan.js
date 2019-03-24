@@ -16,7 +16,7 @@ class Jikan {
     }
 
     async season(year, season) {
-        return await this._query(`${year}/${season}`, {
+        return await this._query(`/season/${year}/${season}`, {
             json: true
         });
     }
