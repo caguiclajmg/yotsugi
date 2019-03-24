@@ -167,7 +167,7 @@ const anime = async (context, psid, params) => {
             }
 
             const jikan = new Jikan();
-            const response = await jikan.search("anime", params[1]);
+            const response = await jikan.search("anime", params.slice(1).join(" "));
 
             if(!response || !response.results) {
                 await context.send.sendText(psid, "No results found!");
