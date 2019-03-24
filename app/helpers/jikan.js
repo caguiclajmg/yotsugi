@@ -10,7 +10,7 @@ class Jikan {
     async _query(endpoint, options) {
         return await rp.get({
             uri: `${this._base_uri}${endpoint}`,
-            json: options.json ? options.json.toString() === "1" : false,
+            json: options.json,
             qs: options
         });
     }
