@@ -140,6 +140,8 @@ const anime = async (context, psid, params) => {
                     const jikan = new Jikan();
                     const response = await jikan.season(params[2], params[1]);
 
+                    console.log(response);
+
                     if(!response || !response.anime) {
                         await context.send.sendText(psid, "No results found for specified season!");
                         return;
