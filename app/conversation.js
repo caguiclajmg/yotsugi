@@ -1,9 +1,8 @@
-const apiai = require("apiai"),
-    config = require("../config");
+const apiai = require("apiai");
 
 let agent = null;
 
-if(config.DIALOGFLOW_TOKEN) agent = apiai(config.DIALOGFLOW_TOKEN);
+if(process.env.DIALOGFLOW_TOKEN) agent = apiai(process.env.DIALOGFLOW_TOKEN);
 
 const textRequest = async (agent, query, options) => {
     return new Promise((resolve, reject) => {

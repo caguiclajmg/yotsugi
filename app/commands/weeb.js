@@ -1,7 +1,8 @@
 "use strict";
 
 const rp = require("request-promise"),
-    { Konachan } = require("../helpers/konachan");
+    { Konachan } = require("../helpers/konachan"),
+    { Jikan, JikanRateLimitException } = require("../helpers/jikan");
 
 const ratewaifu = async (context, sender_psid, params) => {
     if(!params) {
@@ -126,8 +127,92 @@ const konachan = async (context, psid, params) => {
     }
 };
 
+const anime = async (context, psid, params) => {
+    try {
+        await context.send.sendTypingIndicator(psid, true);
+
+        params = params.split(" ");
+        if(!params[0]) {
+            await context.send.sendText(psid, "No command specified, visit the page to know what commands are available for the anime module.");
+            return;
+        }
+
+        if(/season/i.test(params[0])) {
+            if(/summer|spring|fall|winter/i.test(params[1])) {
+                if(/\d{4}/i.test(params[2])) {
+                    const jikan = new Jikan();
+                    const response = await jikan.season(params[2], params[1]);
+
+                    if(!response || !response.anime) {
+                        await context.send.sendText(psid, "No results found for specified season!");
+                        return;
+                    }
+
+                    const anime = response.anime;
+                    let message = "";
+
+                    for(var i = 0; i < anime.length; ++i) {
+                        message += `${i + 1}. ${anime[i].title}\n`;
+                    }
+
+                    await context.send.sendText(psid, message);
+                }
+            } else if(/current/i.test(params[1])) {
+                await context.send.sendText(psid, "Unrecognized command, visit the page for a list of supported commands.");
+            }
+        } else if(/search/i.test(params[0])) {
+            if(params[1].length < 3) {
+                await context.send.sendText(psid, "Search term must be at least 3 cahracters.");
+                return;
+            }
+
+            const jikan = new Jikan();
+            let response;
+
+            try {
+                response = await jikan.search("anime", params.slice(1).join(" "));
+            } catch(err) {
+                if(err instanceof JikanRateLimitException) {
+                    await context.send.sendText(psid, "Search rate limit exceeded, please try again at a later time.");
+                    return;
+                } else {
+                    throw err;
+                }
+            }
+
+            if(!response || !response.results) {
+                await context.send.sendText(psid, "No results found!");
+                return;
+            }
+
+            const results = response.results.filter(result => !/Rx|Hentai/i.test(result.rated));
+            const result = results[0];
+
+            await context.send.sendAttachmentFromURL(psid, "image", result.image_url);
+
+            let message = "";
+            message += `Title: ${result.title}\n`;
+            message += `Synopsis: ${result.synopsis}\n`;
+            message += `Score: ${result.score}\n`;
+            message += `Link: ${result.url}\n`;
+
+            await context.send.sendText(psid, message);
+
+            return;
+        } else {
+            await context.send.sendText(psid, "Unrecognized command, visit the page for a list of supported commands.");
+        }
+    } catch(err) {
+        console.log(err);
+        await context.send.sendText(psid, "Unable to perform command, please try again later.");
+    } finally {
+        await context.send.sendTypingIndicator(psid, false);
+    }
+};
+
 module.exports = exports = {
     ratewaifu,
     safebooru,
     konachan,
+    anime,
 };

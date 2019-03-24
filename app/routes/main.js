@@ -4,7 +4,6 @@ const express = require("express"),
     crypto = require("crypto"),
     bodyParser = require("body-parser"),
     commands = require("../commands"),
-    config = require("../../config"),
     conversation = require("../conversation"),
     router = express.Router();
 
@@ -22,7 +21,7 @@ router.get("/webhook", (req, res) => {
         return;
     }
 
-    if(!token || token !== config.APP_VERIFY_TOKEN) {
+    if(!token || token !== process.env.APP_VERIFY_TOKEN) {
         res.sendStatus(403);
         return;
     }
@@ -66,7 +65,7 @@ function calculateSignature(secret, buf) {
 function verifySignature(req, res, buf) {
     const context = req.app.get("context"),
         expected = req.header("x-hub-signature"),
-        calculated = calculateSignature(context.config.APP_SECRET, buf);
+        calculated = calculateSignature(process.env.APP_SECRET, buf);
 
     if(calculated !== expected) throw new Error("Unable to validate request!");
 }
@@ -76,8 +75,8 @@ async function handleMessage(context, psid, received_message) {
 
     if(!text) return;
 
-    if(text.startsWith(config.COMMAND_PREFIX)) {
-        let [command, ...params] = text.slice(config.COMMAND_PREFIX.length).split(" ");
+    if(text.startsWith(process.env.COMMAND_PREFIX)) {
+        let [command, ...params] = text.slice(process.env.COMMAND_PREFIX.length).split(" ");
         command = command.toLowerCase();
         params = params.join(" ");
 

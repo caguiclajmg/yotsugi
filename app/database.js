@@ -4,8 +4,7 @@ const fs = require("fs"),
     crypto = require("crypto"),
     path = require("path"),
     Sequelize = require("sequelize"),
-    config = require("../config"),
-    sequelize = new Sequelize(config.DATABASE_URL, {
+    sequelize = new Sequelize(process.env.DATABASE_URL, {
         dialectOptions: {
             ssl: true
         },
@@ -62,7 +61,7 @@ const getWaniKaniKey = async(sender_psid) => {
     const parts = row.api_key.split(":"),
         iv = Buffer.from(parts.shift(), "hex"),
         key = Buffer.from(parts.join(":"), "hex"),
-        decipher = crypto.createDecipheriv("aes-256-ctr", Buffer.from(config.APP_SECRET, "utf8"), iv);
+        decipher = crypto.createDecipheriv("aes-256-ctr", Buffer.from(process.env.APP_SECRET, "utf8"), iv);
 
     let dec = decipher.update(key);
     dec = Buffer.concat([dec, decipher.final()]);
@@ -81,7 +80,7 @@ const setWaniKaniKey = async(sender_psid, key) => {
     }
 
     const iv = crypto.randomBytes(16),
-        cipher = crypto.createCipheriv("aes-256-ctr", Buffer.from(config.APP_SECRET, "utf8"), iv);
+        cipher = crypto.createCipheriv("aes-256-ctr", Buffer.from(process.env.APP_SECRET, "utf8"), iv);
 
     let enc = cipher.update(key);
     enc = `${iv.toString("hex")}:${Buffer.concat([enc, cipher.final()]).toString("hex")}`;

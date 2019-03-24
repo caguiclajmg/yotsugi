@@ -7,7 +7,7 @@ const gelbooru = async (context, sender_psid, params) => {
     try {
         await context.send.sendTypingIndicator(sender_psid, true);
 
-        const gelbooru = new Gelbooru(context.config.GELBOORU_KEY, context.config.GELBOORU_USERID),
+        const gelbooru = new Gelbooru(process.env.GELBOORU_KEY, process.env.GELBOORU_USERID),
             images = await gelbooru.posts_list({
                 tags: params
             }),

@@ -2,11 +2,10 @@
 
 const chai = require("chai"),
     expect = chai.expect,
-    config = require("../../config"),
     { Gelbooru } = require("../../app/helpers/gelbooru");
 
 describe("Gelbooru", () => {
-    const gelbooru = new Gelbooru(config.GELBOORU_KEY, config.GELBOORU_USERID);
+    const gelbooru = new Gelbooru(process.env.GELBOORU_KEY, process.env.GELBOORU_USERID);
 
     it("posts_list", () => {
         return gelbooru.posts_list({

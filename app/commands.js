@@ -1,8 +1,7 @@
 "use strict";
 
 const fs = require("fs"),
-    path = require("path"),
-    config = require("../config.js");
+    path = require("path");
 
 function loadModule(path) {
     const module = require(path),
@@ -17,7 +16,7 @@ function loadModule(path) {
 }
 
 function loadModules() {
-    const blacklist = config.MODULE_BLACKLIST || "",
+    const blacklist = process.env.MODULE_BLACKLIST || "",
         moduleBlacklist = blacklist.split(",").map(module => module.trim().toUpperCase()),
         modulePath = path.join(__dirname, "commands");
 
