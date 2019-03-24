@@ -13,18 +13,22 @@ class JikanRateLimitException extends Error {
 class Jikan {
     constructor() {
         this._base_uri = "https://api.jikan.moe/v3";
-        this._last_query = Date.now();
     }
 
     async _query(endpoint, options) {
-        if(Date.now().getTime() - this._last_query.getTime() < 2000) throw new JikanRateLimitException();
-        this._last_query = Date.now();
+        const now = new Date();
 
-        return await rp.get({
+        if(now.getTime() - Jikan._last_query.getTime() < 2000) throw new JikanRateLimitException();
+
+        Jikan._last_query = now;
+
+        const response = await rp.get({
             uri: `${this._base_uri}${endpoint}`,
             json: options.json,
             qs: options.qs
         });
+
+        return response;
     }
 
     async season(year, season) {
@@ -40,6 +44,8 @@ class Jikan {
         });
     }
 }
+
+Jikan._last_query = new Date();
 
 module.exports = exports = {
     Jikan,
