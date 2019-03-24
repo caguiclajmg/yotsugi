@@ -140,8 +140,6 @@ const anime = async (context, psid, params) => {
                     const jikan = new Jikan();
                     const response = await jikan.season(params[2], params[1]);
 
-                    console.log(response);
-
                     if(!response || !response.anime) {
                         await context.send.sendText(psid, "No results found for specified season!");
                         return;
@@ -160,12 +158,33 @@ const anime = async (context, psid, params) => {
                 await context.send.sendText(psid, "Unrecognized command, visit the page for a list of supported commands.");
             }
         } else if(/search/i.test(params[0])) {
-            await context.send.sendText(psid, "Search function is currently not available.");
+            if(params[1].length < 3) {
+                await context.send.sendText(psid, "Search term must be at least 3 cahracters.");
+                return;
+            }
+
+            const jikan = new Jikan();
+            const response = await jikan.search("anime", params[1]);
+
+            if(!response || !response.results) {
+                await context.send.sendText(psid, "No results found!");
+                return;
+            }
+
+            const result = response.results[0];
+
+            let message = "";
+            message += `Title: ${result.title}`;
+            message += `Synopsis: ${result.synopsis}`;
+            message += `Score: ${result.score}`;
+            message += `Link: ${result.url}`;
+
+            await context.send.sendText(psid, message);
 
             return;
+        } else {
+            await context.send.sendText(psid, "Unrecognized command, visit the page for a list of supported commands.");
         }
-
-        await context.send.sendText(psid, "Unrecognized command, visit the page for a list of supported commands.");
     } catch(err) {
         console.log(err);
         await context.send.sendText(psid, "Unable to perform command, please try again later.");
