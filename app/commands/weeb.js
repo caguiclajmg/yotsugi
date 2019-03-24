@@ -173,11 +173,13 @@ const anime = async (context, psid, params) => {
 
             const result = response.results[0];
 
+            await context.send.sendAttachmentFromURL(psid, "image", result.image_url);
+
             let message = "";
-            message += `Title: ${result.title}`;
-            message += `Synopsis: ${result.synopsis}`;
-            message += `Score: ${result.score}`;
-            message += `Link: ${result.url}`;
+            message += `Title: ${result.title}\n`;
+            message += `Synopsis: ${result.synopsis}\n`;
+            message += `Score: ${result.score}\n`;
+            message += `Link: ${result.url}\n`;
 
             await context.send.sendText(psid, message);
 
