@@ -132,7 +132,10 @@ const anime = async (context, psid, params) => {
         await context.send.sendTypingIndicator(psid, true);
 
         params = params.split(" ");
-        if(!params[0]) throw "";
+        if(!params[0]) {
+            await context.send.sendText(psid, "No command specified, visit the page to know what commands are available for the anime module.");
+            return;
+        }
 
         if(/season/i.test(params[0])) {
             if(/summer|spring|fall|winter/i.test(params[1])) {
