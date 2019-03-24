@@ -2,7 +2,7 @@
 
 const rp = require("request-promise"),
     { Konachan } = require("../helpers/konachan"),
-    { Jikan } = require("../helpers/jikan");
+    { Jikan, JikanRateLimitException } = require("../helpers/jikan");
 
 const ratewaifu = async (context, sender_psid, params) => {
     if(!params) {
@@ -167,7 +167,18 @@ const anime = async (context, psid, params) => {
             }
 
             const jikan = new Jikan();
-            const response = await jikan.search("anime", params.slice(1).join(" "));
+            let response;
+
+            try {
+                response = await jikan.search("anime", params.slice(1).join(" "));
+            } catch(err) {
+                if(err instanceof JikanRateLimitException) {
+                    await context.send.sendText(psid, "Search rate limit exceeded, please try again at a later time.");
+                    return;
+                } else {
+                    throw err;
+                }
+            }
 
             if(!response || !response.results) {
                 await context.send.sendText(psid, "No results found!");

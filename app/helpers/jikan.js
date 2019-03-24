@@ -2,7 +2,7 @@
 
 const rp = require("request-promise");
 
-class RateLimitException extends Error {
+class JikanRateLimitException extends Error {
     RateLimitException(message, data) {
         this.name = "RateLimitException";
         this.message = message;
@@ -17,7 +17,7 @@ class Jikan {
     }
 
     async _query(endpoint, options) {
-        if(Date.now().getTime() - this._last_query.getTime() < 2000) throw new RateLimitException();
+        if(Date.now().getTime() - this._last_query.getTime() < 2000) throw new JikanRateLimitException();
         this._last_query = Date.now();
 
         return await rp.get({
@@ -43,5 +43,5 @@ class Jikan {
 
 module.exports = exports = {
     Jikan,
-    RateLimitException
+    JikanRateLimitException
 };
