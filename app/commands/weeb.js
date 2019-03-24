@@ -174,7 +174,8 @@ const anime = async (context, psid, params) => {
                 return;
             }
 
-            const result = response.results[0];
+            const results = response.results.filter(result => !/Rx|Hentai/i.test(result.rated));
+            const result = results[0];
 
             await context.send.sendAttachmentFromURL(psid, "image", result.image_url);
 
