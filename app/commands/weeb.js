@@ -147,7 +147,7 @@ const anime = async (context, psid, params) => {
             }
 
             const jikan = new Jikan();
-            const response = await jikan.season(match[1], match[0]);
+            const response = await jikan.season(match[2], match[1]);
 
             if(!response) throw new Error("Unable to fetch data from Jikan!");
 
