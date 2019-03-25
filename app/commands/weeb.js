@@ -161,7 +161,9 @@ const anime = async (context, psid, params) => {
                 await context.send.sendText(psid, "Unrecognized command, visit the page for a list of supported commands.");
             }
         } else if(/search/i.test(params[0])) {
-            if(params[1].length < 3) {
+            const query = params.slice(1).join(" ");
+
+            if(query.length < 3) {
                 await context.send.sendText(psid, "Search term must be at least 3 cahracters.");
                 return;
             }
@@ -170,7 +172,7 @@ const anime = async (context, psid, params) => {
             let response;
 
             try {
-                response = await jikan.search("anime", params.slice(1).join(" "));
+                response = await jikan.search("anime", query);
             } catch(err) {
                 if(err instanceof JikanRateLimitException) {
                     await context.send.sendText(psid, "Search rate limit exceeded, please try again at a later time.");
