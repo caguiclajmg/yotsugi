@@ -149,11 +149,7 @@ const anime = async (context, psid, params) => {
                     }
 
                     const anime = response.anime;
-                    let message = "";
-
-                    for(var i = 0; i < anime.length; ++i) {
-                        message += `${i + 1}. ${anime[i].title}\n`;
-                    }
+                    const message = anime.map((value, index) => `${index + 1}. ${value.title}`).join("\n");
 
                     await context.send.sendText(psid, message);
                 }
