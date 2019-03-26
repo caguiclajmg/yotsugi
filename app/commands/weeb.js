@@ -138,30 +138,33 @@ const anime = async (context, psid, params) => {
         }
 
         if(/season/i.test(params[0])) {
-            if(/summer|spring|fall|winter/i.test(params[1])) {
-                if(/\d{4}/i.test(params[2])) {
-                    const jikan = new Jikan();
-                    const response = await jikan.season(params[2], params[1]);
+            const season = params.slice(1).join(" ");
+            const match = /(summer|spring|fall|winter)\s(\d{4})/i.exec(season);
 
-                    if(!response || !response.anime) {
-                        await context.send.sendText(psid, "No results found for specified season!");
-                        return;
-                    }
-
-                    const anime = response.anime;
-                    let message = "";
-
-                    for(var i = 0; i < anime.length; ++i) {
-                        message += `${i + 1}. ${anime[i].title}\n`;
-                    }
-
-                    await context.send.sendText(psid, message);
-                }
-            } else if(/current/i.test(params[1])) {
-                await context.send.sendText(psid, "Unrecognized command, visit the page for a list of supported commands.");
+            if(!match) {
+                await context.send.sendText(psid, "Enter the year and season you want to look up. (Example: !anime season Winter 2019)");
+                return;
             }
+
+            const jikan = new Jikan();
+            const response = await jikan.season(match[2], match[1]);
+
+            if(!response) throw new Error("Unable to fetch data from Jikan!");
+
+            const anime = response.anime;
+
+            if(!anime) {
+                await context.send.sendText(psid, "");
+                return;
+            }
+
+            const message = anime.map((value, index) => `${index + 1}. ${value.title}\n`).join(" ");
+
+            await context.send.sendText(psid, message);
         } else if(/search/i.test(params[0])) {
-            if(params[1].length < 3) {
+            const query = params.slice(1).join(" ");
+
+            if(query.length < 3) {
                 await context.send.sendText(psid, "Search term must be at least 3 cahracters.");
                 return;
             }
@@ -170,7 +173,7 @@ const anime = async (context, psid, params) => {
             let response;
 
             try {
-                response = await jikan.search("anime", params.slice(1).join(" "));
+                response = await jikan.search("anime", query);
             } catch(err) {
                 if(err instanceof JikanRateLimitException) {
                     await context.send.sendText(psid, "Search rate limit exceeded, please try again at a later time.");
