@@ -158,7 +158,7 @@ const anime = async (context, psid, params) => {
                 return;
             }
 
-            const message = anime.map((value, index) => `${index + 1}. ${value.titles.Default}\n`).join(" ");
+            const message = anime.map((value, index) => `${index + 1}. ${value.titles.filter(title => title.type === 'Default')[0]?.title || 'Unknown'}\n`).join(" ");
 
             await context.send.sendText(psid, message);
         } else if(/search/i.test(params[0])) {
