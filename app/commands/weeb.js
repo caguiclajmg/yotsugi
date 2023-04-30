@@ -191,13 +191,11 @@ const anime = async (context, psid, params) => {
             const results = response.data.filter(result => !/Rx|Hentai/i.test(result.rating));
             const result = results[0];
 			
-			const images = result.images?.jpg;
-			if(images && images.length > 0) {
-				const image = images[0];
+			const image = result.images?.jpg;
+			if(image) {
 				await context.send.sendAttachmentFromURL(psid, "image", image.image_url);
 			}
 			
-
             let message = "";
             message += `Title: ${result.title}\n`;
             message += `Synopsis: ${result.synopsis}\n`;
