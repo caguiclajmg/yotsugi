@@ -173,7 +173,7 @@ const anime = async (context, psid, params) => {
             let response;
 
             try {
-                response = await jikan.search("anime", query);
+                response = await jikan.search("tv,movie,ova,special,ona,music", query);
             } catch(err) {
                 if(err instanceof JikanRateLimitException) {
                     await context.send.sendText(psid, "Search rate limit exceeded, please try again at a later time.");
@@ -183,15 +183,20 @@ const anime = async (context, psid, params) => {
                 }
             }
 
-            if(!response || !response.results) {
+            if(!response || !response.data) {
                 await context.send.sendText(psid, "No results found!");
                 return;
             }
 
-            const results = response.results.filter(result => !/Rx|Hentai/i.test(result.rated));
+            const results = response.data.filter(result => !/Rx|Hentai/i.test(result.rating));
             const result = results[0];
-
-            await context.send.sendAttachmentFromURL(psid, "image", result.image_url);
+			
+			const images = result.images?.jpg;
+			if(images && images.length > 0) {
+				const image = images[0];
+				await context.send.sendAttachmentFromURL(psid, "image", image.image_url);
+			}
+			
 
             let message = "";
             message += `Title: ${result.title}\n`;
