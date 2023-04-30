@@ -12,7 +12,7 @@ class JikanRateLimitException extends Error {
 
 class Jikan {
     constructor() {
-        this._base_uri = "https://api.jikan.moe/v3";
+        this._base_uri = "https://api.jikan.moe/v4";
     }
 
     async _query(endpoint, options) {
@@ -32,13 +32,13 @@ class Jikan {
     }
 
     async season(year, season) {
-        return await this._query(`/season/${year}/${season}`, {
+        return await this._query(`/seasons/${year}/${season}`, {
             json: true
         });
     }
 
     async search(type, query, filters) {
-        return await this._query(`/search/${type}/?q=${encodeURIComponent(query)}&page=1`, {
+        return await this._query(`/anime?type=${type}&q=${encodeURIComponent(query)}&page=1`, {
             json: true,
             qs: filters
         });
