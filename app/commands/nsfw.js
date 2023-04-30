@@ -8,9 +8,9 @@ const gelbooru = async (context, sender_psid, params) => {
         await context.send.sendTypingIndicator(sender_psid, true);
 
         const gelbooru = new Gelbooru(process.env.GELBOORU_KEY, process.env.GELBOORU_USERID),
-            images = await gelbooru.posts_list({
+            images = (await gelbooru.posts_list({
                 tags: params
-            }).post,
+            })).post,
             index = Math.floor(Math.random() * images.length),
             url = images[index].file_url;
         await context.send.sendAttachmentFromURL(sender_psid, "image", url);
