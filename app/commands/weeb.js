@@ -151,14 +151,14 @@ const anime = async (context, psid, params) => {
 
             if(!response) throw new Error("Unable to fetch data from Jikan!");
 
-            const anime = response.anime;
+            const anime = response.data;
 
             if(!anime) {
                 await context.send.sendText(psid, "");
                 return;
             }
 
-            const message = anime.map((value, index) => `${index + 1}. ${value.title}\n`).join(" ");
+            const message = anime.map((value, index) => `${index + 1}. ${value.titles.Default}\n`).join(" ");
 
             await context.send.sendText(psid, message);
         } else if(/search/i.test(params[0])) {
