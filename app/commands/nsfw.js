@@ -15,6 +15,7 @@ const gelbooru = async (context, sender_psid, params) => {
             url = images[index].file_url;
         await context.send.sendAttachmentFromURL(sender_psid, "image", url);
     } catch(err) {
+		console.error(err);
         await context.send.sendText(sender_psid, "No image with specified tags found!");
     } finally {
         await context.send.sendTypingIndicator(sender_psid, false);
